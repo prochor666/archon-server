@@ -1,0 +1,4 @@
+bind = ["0.0.0.0:7007", "[::]:7007"]
+use_reloader = "False"
+server_names = ["archon.test:7007", "localhost:7007"]
+workers = 7

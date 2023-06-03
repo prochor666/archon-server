@@ -1,0 +1,464 @@
+api:
+  rest:
+    about:
+      authorized: false
+      methods:
+        GET:
+          decorator: common._about
+          valid_schema:
+            v1: {}
+    test:
+      authorized: false
+      methods:
+        GET:
+          decorator: common._test
+          valid_schema:
+            v1: {}
+        POST:
+          decorator: common._test
+          valid_schema:
+            v1: {}
+        PUT:
+          decorator: common._test
+          valid_schema:
+            v1: {}
+        PATCH:
+          decorator: common._test
+          valid_schema:
+            v1: {}
+        DELETE:
+          decorator: common._test
+          valid_schema:
+            v1: {}
+    client_ip:
+      authorized: false
+      methods:
+        GET:
+          decorator: network._client_ip
+          valid_schema:
+            v1: {}
+    activate_user:
+      authorized: false
+      methods:
+        GET:
+          decorator: users._activate_user
+          valid_schema:
+            v1: {}
+    soft_recovery:
+      authorized: false
+      methods:
+        GET:
+          decorator: auth._soft_recovery
+          valid_schema:
+            v1: {}
+    full_recovery:
+      methods:
+        GET:
+          decorator: auth._full_recovery
+          valid_schema:
+            v1: {}
+    system:
+      authorized: true
+      methods:
+        GET:
+          decorator: system._system
+          valid_schema:
+            v1: {}
+    network:
+      authorized: true
+      methods:
+        GET:
+          decorator: system._network
+          valid_schema:
+            v1: {}
+    cpu:
+      authorized: true
+      methods:
+        GET:
+          decorator: system._cpu
+          valid_schema:
+            v1: {}
+    memory:
+      authorized: true
+      methods:
+        GET:
+          decorator: system._memory
+          valid_schema:
+            v1: {}
+    disk:
+      authorized: true
+      methods:
+        GET:
+          decorator: system._disk
+          valid_schema:
+            v1: {}
+    login:
+      authorized: false
+      methods:
+        GET:
+          decorator: auth._login
+          valid_schema:
+            v1: {}
+        POST:
+          decorator: auth._login
+          valid_schema:
+            v1: {}
+    countries:
+      authorized: true
+      methods:
+        GET:
+          decorator: common._countries
+          valid_schema:
+            v1: {}
+    ip:
+      authorized: true
+      methods:
+        GET:
+          decorator: network._ip
+          valid_schema:
+            v1: {}
+    scan_ip:
+      authorized: true
+      methods:
+        GET:
+          decorator: network._scan_ip
+          valid_schema:
+            v1: {}
+    domain_info:
+      authorized: true
+      methods:
+        POST:
+          decorator: network._domain_info
+          valid_schema:
+            v1: {}
+    devices:
+      authorized: true
+      methods:
+        GET:
+          decorator: assets._devices
+          valid_schema:
+            v1: {}
+        POST:
+          decorator: assets._create_device
+          valid_schema:
+            v1: {}
+        PUT:
+          decorator: assets._modify_device
+          valid_schema:
+            v1: {}
+        PATCH:
+          decorator: assets._message_to_device
+          valid_schema:
+            v1: {}
+        DELETE:
+          decorator: assets._delete_device
+          valid_schema:
+            v1: {}
+    users:
+      authorized: true
+      methods:
+        GET:
+          decorator: users._users
+          valid_schema:
+            v1: {}
+        POST:
+          decorator: users._create_user
+          valid_schema:
+            v1: {}
+        PUT:
+          decorator: users._modify_user
+          valid_schema:
+            v1: {}
+        PATCH:
+          decorator: users._activate_user
+          valid_schema:
+            v1: {}
+        DELETE:
+          decorator: users._delete_user
+          valid_schema:
+            v1: {}
+    servers:
+      authorized: true
+      methods:
+        GET:
+          decorator: assets._servers
+          valid_schema:
+            v1: {}
+        POST:
+          decorator: assets._create_server
+          valid_schema:
+            v1: {}
+        PUT:
+          decorator: assets._modify_server
+          valid_schema:
+            v1: {}
+        PATCH:
+          decorator: assets._activate_server
+          valid_schema:
+            v1: {}
+        DELETE:
+          decorator: assets._delete_server
+          valid_schema:
+            v1: {}
+    scripts:
+      authorized: true
+      methods:
+        GET:
+          decorator: assets._scripts
+          valid_schema:
+            v1: {}
+        POST:
+          decorator: assets._create_script
+          valid_schema:
+            v1: {}
+        PUT:
+          decorator: assets._modify_script
+          valid_schema:
+            v1: {}
+        PATCH:
+          decorator: assets._activate_script
+          valid_schema:
+            v1: {}
+        DELETE:
+          decorator: assets._delete_script
+          valid_schema:
+            v1: {}
+    sites:
+      authorized: true
+      methods:
+        GET:
+          decorator: assets._sites
+          valid_schema:
+            v1: {}
+        POST:
+          decorator: assets._create_site
+          valid_schema:
+            v1: {}
+        PUT:
+          decorator: assets._modify_site
+          valid_schema:
+            v1: {}
+        PATCH:
+          decorator: assets._activate_site
+          valid_schema:
+            v1: {}
+        DELETE:
+          decorator: assets._delete_site
+          valid_schema:
+            v1: {}
+    ssh_keys:
+      authorized: true
+      methods:
+        GET:
+          decorator: network._ssh_keys
+          valid_schema:
+            v1: {}
+    test_connection:
+      authorized: true
+      methods:
+        GET:
+          decorator: remote._test_connection
+          valid_schema:
+            v1: {}
+    deploy:
+      authorized: true
+      methods:
+        GET:
+          decorator: remote._deploy
+          valid_schema:
+            v1: {}
+    validate_domain:
+      authorized: true
+      methods:
+        GET:
+          decorator: remote._validate_domain
+          valid_schema:
+            v1: {}
+    get_enums:
+      authorized: true
+      methods:
+        GET:
+          decorator: common._get_enums
+          valid_schema:
+            v1: {}
+    monitor_server:
+      authorized: true
+      methods:
+        GET:
+          decorator: remote._monitor_server
+          valid_schema:
+            v1: {}
+    monitoring:
+      authorized: true
+      methods:
+        GET:
+          decorator: remote._monitoring
+          valid_schema:
+            v1: {}
+    install_monitoring_service:
+      authorized: true
+      methods:
+        PUT:
+          decorator: remote._install_monitoring_service
+          valid_schema:
+            v1: {}
+    detect_root:
+      authorized: true
+      methods:
+        PUT:
+          decorator: remote._detect_root
+          valid_schema:
+            v1: {}
+  cli:
+    about:
+      decorator: common._about
+      valid_schema:
+        v1: {}
+    system:
+      decorator: system._system
+      valid_schema:
+        v1: {}
+    network:
+      decorator: system._network
+      valid_schema:
+        v1: {}
+    cpu:
+      decorator: system._cpu
+      valid_schema:
+        v1: {}
+    memory:
+      decorator: system._memory
+      valid_schema:
+        v1: {}
+    disk:
+      decorator: system._disk
+      valid_schema:
+        v1: {}
+    is_email:
+      decorator: common._is_email
+      valid_schema:
+        v1:
+          arguments:
+            email: true
+    countries:
+      decorator: common._countries
+      valid_schema:
+        v1: {}
+    ip:
+      decorator: network._ip
+      valid_schema:
+        v1: {}
+    test:
+      decorator: common._test
+      valid_schema:
+        v1: {}
+    scan_ip:
+      decorator: network._scan_ip
+      valid_schema:
+        v1:
+          arguments:
+            ip: true
+            ports: false
+    scan:
+      decorator: network._scan
+      valid_schema:
+        v1: {}
+    db_check:
+      decorator: db._db_check
+      valid_schema:
+        v1: {}
+    users:
+      decorator: users._users
+      valid_schema:
+        v1:
+          arguments:
+            filter: false
+            sort: false
+    devices:
+      decorator: assets._devices
+      valid_schema:
+        v1:
+          arguments:
+            filter: false
+            sort: false
+            exclude: false
+    soft_recovery:
+      decorator: auth._soft_recovery
+      valid_schema:
+        v1:
+          arguments:
+            username: true
+    full_recovery:
+      decorator: auth._full_recovery
+      valid_schema:
+        v1:
+          arguments:
+            username: true
+    get_system_user:
+      decorator: users._get_system_user
+      valid_schema:
+        v1: {}
+    servers:
+      decorator: assets._servers
+      valid_schema:
+        v1:
+          arguments:
+            filter: false
+            sort: false
+            exclude: false
+    scripts:
+      decorator: assets._scripts
+      valid_schema:
+        v1:
+          arguments:
+            filter: false
+            sort: false
+            exclude: false
+    sites:
+      decorator: assets._sites
+      valid_schema:
+        v1:
+          arguments:
+            filter: false
+            sort: false
+            exclude: false
+    domain_info:
+      decorator: network._domain_info
+      valid_schema:
+        v1: {}
+    ssh_keys:
+      decorator: network._ssh_keys
+      valid_schema:
+        v1: {}
+    test_connection:
+      decorator: remote._test_connection
+      valid_schema:
+        v1: {}
+    validate_domain:
+      decorator: network._validate_domain
+      valid_schema:
+        v1: {}
+    get_enums:
+      decorator: common._get_enums
+      valid_schema:
+        v1: {}
+    monitor_server:
+      decorator: remote._monitor_server
+      valid_schema:
+        v1:
+          arguments:
+            id: true
+    monitoring:
+      decorator: remote._monitoring
+      valid_schema:
+        v1: {}
+    monitor_servers:
+      decorator: remote._monitor_servers
+      valid_schema:
+        v1: {}
+    install_monitoring_service:
+      decorator: remote._install_monitoring_service
+      valid_schema:
+        v1:
+          arguments:
+            id: true

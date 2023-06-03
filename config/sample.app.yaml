@@ -1,0 +1,35 @@
+name: Archon server
+full_name: Content and device control server
+version: "1.0"
+filesystem:
+  sites: storage/sites
+  devices: storage/devices
+  templates: storage/templates
+  resources: storage/resources
+timezone: UTC
+mask_http_origin: archon.test
+mask_http_port: 7007
+https: false
+hosts:
+  origins:
+    - "*"
+authorization:
+  header_prefix: "Bearer "
+db_driver: mongodb
+db:
+  mongodb:
+    host: localhost
+    port: 27017
+    db: archon
+dns_resolver:
+  nameservers:
+    - 8.8.4.4
+    - 8.8.8.8
+scan_ip:
+  ttl: 0.37
+enum_options:
+  script_targets:
+    - target: site
+      name: Sites
+    - target: server
+      name: Servers

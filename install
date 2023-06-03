@@ -1,0 +1,119 @@
+#!/bin/bash
+
+echo "archon installer"
+
+PYTHON="$(which python3)"
+PIP="$(which pip)"
+APPCONFIG="config/app.yaml"
+SAPPCONFIG="config/sample.app.yaml"
+APICONFIG="config/api.yaml"
+SAPICONFIG="config/sample.api.yaml"
+SMTPCONFIG="config/smtp.yaml"
+SSMTPCONFIG="config/sample.smtp.yaml"
+SITESDIR="storage/sites"
+DEVICESDIR="storage/devices"
+RESOURCESDIR="storage/resources"
+LOGSDIR="storage/logs"
+
+if [[ ! -x "$PYTHON" ]];
+then
+    echo  "Python 3 is required, exiting..."
+    exit 1
+fi
+
+VERSIONRAW="$($PYTHON -V)"
+EMPT=""
+CLEAN="${VERSIONRAW/Python /$EMPT}"
+NUM="${CLEAN//./$EMPT}"
+
+echo $NUM
+
+if [[ "$NUM" -lt "373" ]];
+then
+    echo "Python 3.7.3 or newer is required"
+    exit 1
+fi
+
+
+if [[ ! -x "$PIP" ]];
+then
+    echo  "PIP is required, exiting..."
+    exit 1
+fi
+
+if [[ -x "$PYTHON" ]] & [[ -x "$PIP" ]];
+then
+    pip install pymongo
+    pip install pyyaml
+    pip install pyopenssl
+    pip install pyIsEmail
+    pip install psutil
+    pip install websocket
+    pip install websocket-client
+    pip install dnspython
+    pip install python-slugify
+    pip install asyncssh
+    pip install requests
+    pip install hypercorn
+    pip install fastapi
+    pip install mysql-connector-python
+    pip install colorama
+
+    if [[ ! -d $SITESDIR ]];
+    then
+        mkdir -p $SITESDIR
+        echo "Created directory $SITESDIR"
+    else
+        echo "Directory $SITESDIR exists"
+    fi
+
+    if [[ ! -d $DEVICESDIR ]];
+    then
+        mkdir -p $DEVICESDIR
+        echo "Created directory $DEVICESDIR"
+    else
+        echo "Directory $DEVICESDIR exists"
+    fi
+
+    if [[ ! -d $RESOURCESDIR ]];
+    then
+        mkdir -p $RESOURCESDIR
+        echo "Created directory $RESOURCESDIR"
+    else
+        echo "Directory $RESOURCESDIR exists"
+    fi
+
+    if [[ ! -d $LOGSDIR ]];
+    then
+        mkdir -p $LOGSDIR
+        echo "Created directory $LOGSDIR"
+    else
+        echo "Directory $LOGSDIR exists"
+    fi
+
+    if [[ ! -f $APPCONFIG ]];
+    then
+        cp $SAPPCONFIG $APPCONFIG
+        echo "Created file $APPCONFIG"
+    else
+        echo "File $APPCONFIG exists"
+    fi
+
+    if [[ ! -f $APICONFIG ]];
+    then
+        cp $SAPICONFIG $APICONFIG
+        echo "Created file $APICONFIG"
+    else
+        echo "File $APICONFIG exists"
+    fi
+
+    if [[ ! -f $SMTPCONFIG ]];
+    then
+        cp $SSMTPCONFIG $SMTPCONFIG
+        echo "Created file $SMTPCONFIG"
+    else
+        echo "File $SMTPCONFIG exists"
+    fi
+
+    chmod +x app archon
+fi
