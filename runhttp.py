@@ -64,7 +64,7 @@ async def respond(endpoint: str, request: Request, response: Response, id: str =
         reason = f"API route: {endpoint} method {request.method} not allowed"
 
         #if request.method in ['POST', 'PUT', 'PATCH'] and \
-        if request.method in app.config['api']['rest'][endpoint]['methods'].keys() and \
+        if request.method in app.config['api']['rest'][endpoint]['http_request_methods'].keys() and \
             request.headers.get('Content-type') != None and \
             str(request.headers.get('Content-type')).startswith('application/json'):
 
@@ -98,7 +98,7 @@ async def respond(endpoint: str, request: Request, response: Response, id: str =
             module_status = True
 
             if endpoint != 'login':
-                parsed_decorator = app.config['api']['rest'][endpoint]['methods'][request.method]['decorator'].split('.')
+                parsed_decorator = app.config['api']['rest'][endpoint]['http_request_methods'][request.method]['decorator'].split('.')
                 module = parsed_decorator[0]
                 method = parsed_decorator[1]
 
