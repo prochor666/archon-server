@@ -3,14 +3,9 @@ from archon import app, compat, utils, colors
 from archon.api import assets, auth, common, db, network, remote, system,  users 
 from archon.auth import auth as authorization
 
+
 compat.check_version()
 app.mode = 'cli'
-
-
-def insert(msg: str, indent: bool = True):
-    if indent == True:
-        print()
-    print(msg)
 
 
 def create_endpoint_argset(endpoint: str) -> dict:
@@ -40,16 +35,18 @@ def create_endpoint_argset(endpoint: str) -> dict:
     return argset
 
 
-def cli_app(): 
+def cli_app():
+
     parser = argparse.ArgumentParser(
         description="Archon command line tool",
         epilog="All accessible arguments listed above"
     )
 
     parser.add_argument('endpoint', help="Specify API method")
+    output_buffer = []
 
     args, unknown = parser.parse_known_args()
-    data_pass = utils.validate_data_pass(dict(vars(args)))
+    data_pass = utils.validate_data_pass(vars(args))
     endpoint = data_pass.pop('endpoint', None)
 
     if endpoint != None and endpoint in app.config['api']['cli']:
@@ -62,8 +59,8 @@ def cli_app():
         for optional_arg in endpoint_schema['optional']:
             parser.add_argument(f"-{optional_arg}", type=str, nargs='+')
 
-        args, unknown = parser.parse_known_args()
-        data_pass = utils.validate_data_pass(dict(vars(args)))
+        #args, unknown = parser.parse_known_args()
+        data_pass = utils.validate_data_pass(vars(parser.parse_args()))
 
         app.store['user'] = users._get_system_user()
 
@@ -76,10 +73,9 @@ def cli_app():
             result = getattr(obj[module], method)(data_pass)
 
             who = f" [Archon-{app.config['version']}]@{app.store['user']['username']} "
-
-            insert(f"👽 {colors.mod(who, 'lightcyan_ex', 'blue')}")
-            data_mode = f"  Data  mode: {type(result).__name__}  "
-            insert(f"🧪 {colors.mod(data_mode, 'white', 'blue')}")
+            intro = f"👽 {colors.mod(who, 'lightcyan_ex', 'blue')}"
+            data_mode = f" Result ok: {type(result).__name__}  "
+            data_status_and_mode = f"🧪 {colors.mod(data_mode, 'white', 'green')}"
 
             if type(result) == dict:
                 status = True
@@ -93,20 +89,36 @@ def cli_app():
                     message = result['message']
                     result.pop('message', None)
 
-                insert(utils.format_response(status, message))
-                
-                result_json = json.dumps(dict(result), indent=4)
-                insert(result_json)
+                if status == False:
+                    data_mode = f" Result fail: {type(result).__name__}  "
+                    data_status_and_mode = f"🧪 {colors.mod(data_mode, 'white', 'red')}"
+
+                method_response = utils.format_response(status, message)
+                result_json = json.dumps(result, indent=4)
+
+                output_buffer.append(intro)
+                output_buffer.append(data_status_and_mode)
+                output_buffer.append(method_response)
+                output_buffer.append(result_json)
 
             if type(result) == list or type(result) == tuple or type(result) == set:
-                for i in range(len(result)):
-                    insert(str(result[i]), True if i == 0 else False)
+                result_json = json.dumps(result, indent=4)
+                
+                output_buffer.append(intro)
+                output_buffer.append(data_status_and_mode)
+                output_buffer.append('')
+                output_buffer.append(result_json)
 
-            print()
+            output_buffer.append(' ')
 
     else:
-        insert(utils.format_response(False, f"endpoint '{endpoint}' 👻 is not allowed"))
-        print()
+        output_buffer.append(
+            utils.format_response(False, f"endpoint '{endpoint}' 👻 is not allowed"))
+        output_buffer.append(' ')
+
+
+    print('\n'.join(output_buffer))
+    
 
 
 if __name__ == "__main__":

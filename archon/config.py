@@ -38,6 +38,15 @@ def api_config():
     return {}
 
 
+def load_config(custom_config):
+    app_dirs = locate_dirs()
+    with open(f"{app_dirs['config']}/{custom_config}.yaml") as conf:
+        data = yaml.load(conf, Loader=yaml.Loader)
+        return data
+
+    return {}
+
+
 def smtp_config():
     app_dirs = locate_dirs()
     with open(app_dirs['config']+'/smtp.yaml') as smtp:

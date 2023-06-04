@@ -11,21 +11,14 @@ def _users(data_pass: dict = {}) -> dict:
         'status': False,
         'message': str(u) if type(u) is str else "No users",
         'users': [],
-        'count': 0 if type(u) is str or u == None else u.count() # type: ignore
+        'count': 0 if type(u) is str or u == None else len(u)
     }
+
     if result['count'] > 0:
         result['status'] = True
+        result['users'] = data.collect(u)
 
-        if app.mode == 'http':
-            for user in u:
-                if user['username'] == 'system': # type: ignore
-                    result['count'] = result['count'] - 1
-                else:
-                    result['users'].append(data.collect_one(user))
-        else:
-            result['users'] = data.collect(u)
-
-        result['message'] = f"Found users: {result['count']}"
+        result['message'] = f"Found some users ({result['count']})"
 
     return result
 

@@ -21,15 +21,12 @@ def ssh_port() -> int:
     return 22
 
 
-def scan() -> list:
+def scan_all_interfaces() -> list:
     ips = device_ip()
     result = []
     if type(ips) is list:
         for ip in ips:
-            result.append({
-                'ip': ip,
-                'ports': scan_ip(ip)
-            })
+            result.append(scan_ip(ip))
 
     return result
 
@@ -45,6 +42,7 @@ def scan_ip(ip: str, ports: list = [21, 22, 80, 443, 3306]) -> dict:
     if 'scan_ip' in app.config and 'ttl' in app.config['scan_ip'] and type(app.config['scan_ip']["ttl"]) in [float, int]:
         ttl = app.config['scan_ip']["ttl"]
     result = {
+        'ip': ip,
         'ports': {},
         'scan_result': "Failed, no init",
         'scan_status': False,

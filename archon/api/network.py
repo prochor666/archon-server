@@ -52,13 +52,12 @@ def _ip(data_pass: dict = {}) -> list:
     return network.device_ip()
 
 
-def _scan(data_pass: dict = {}) -> dict:
-    scn = network.scan()
+def _scan_all_interfaces(data_pass: dict = {}) -> dict:
+    scn = network.scan_all_interfaces()
     result = {
         'status': True,
         'message': 'Scanned',
-        'data_pass': data_pass,
-        'ips': scn
+        'data': scn
     }
     return result
 

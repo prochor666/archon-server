@@ -2,64 +2,50 @@ from archon import app, data
 from archon.models.users import users
 
 
-def authorization_process(endpoint: str, method: str, authorization: str) -> dict:
+def authorization_process(authorization: str, required = True) -> dict:
 
     result = {
+        'status': False,
         'message': "Authorization failed",
-        'username': '',
-        'role': '',
-        'status': False
+        'data': {}
     }
 
-    if endpoint in app.config['api']['rest'].keys() and \
-        app.config['api']['rest'][endpoint]['authorized'] == True and \
-        method in app.config['api']['rest'][endpoint]['methods']:
-
+    if required == True:
         if len(authorization) > 0:
             auth_token = extract_auth_token(
                 authorization)
 
+            result['message'] = "User found, secret check failed"
+
             if len(auth_token) > 63:
-                login_obj = login({'auth_token': auth_token})
-                return login_obj
-
-    if endpoint in app.config['api']['rest'].keys() and \
-        app.config['api']['rest'][endpoint]['authorized'] == False and \
-        method in app.config['api']['rest'][endpoint]['methods']:
-
+                user_data = login({'auth_token': auth_token})
+                result['data'] = user_data
+    else: 
         result['message'] = "No authorization required"
         result['status'] = True
 
     return result
 
 
-def login(data_pass: dict = {}) -> dict:
-    result = {
-        'message': "Token authorization failed",
-        'username': '',
-        'role': '',
-        'status': False
-    }
+def login(auth_token: str) -> dict:
+    result = False
 
-    if 'auth_token' in data_pass.keys():
-        user_data = get_user_from_db(data_pass['auth_token'])
+    user_data = get_user_from_db(auth_token)
 
-        if type(user_data) is dict:
-            secret_key_check = users.hash_user({
-                'email': user_data['email'],
-                'salt':  user_data['salt'],
-                'pwd': data_pass['auth_token']
-            })
+    if type(user_data) is dict:
+        secret_key_check = users.hash_user({
+            'email': user_data['email'],
+            'salt':  user_data['salt'],
+            'pwd': auth_token
+        })
 
-            result['message'] = "User found, secret check failed"
-
-            if 'username' in user_data.keys() and 'pwd' in user_data.keys() and data_pass['auth_token'] == user_data['pwd'] and secret_key_check == user_data['secret']:
-                result['message'] = "Authorization succeeded"
-                result['username'] = user_data['username']
-                result['role'] = user_data['role']
-                result['email'] = user_data['email']
-                result['_id'] = user_data['_id']
-                result['status'] = True
+        if 'username' in user_data.keys() and 'pwd' in user_data.keys() and auth_token == user_data['pwd'] and secret_key_check == user_data['secret']:
+            result['message'] = "Authorization succeeded"
+            result['username'] = user_data['username']
+            result['role'] = user_data['role']
+            result['email'] = user_data['email']
+            result['_id'] = user_data['_id']
+            result['status'] = True
 
     return result
 
@@ -77,7 +63,7 @@ def extract_auth_token(header: str) -> str:
 def get_user_from_db(token: str) -> bool | dict:
     user = users.load_one({
         'pwd': token
-    }, no_filter_pattern=True)
+    }, exclude_keys = False)
 
     if type(user) is dict:
         return data.collect_one(user)

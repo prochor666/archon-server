@@ -11,15 +11,15 @@ def load(filter_data: dict, sort_data: dict | None = None) -> list:
         'sort': sort_data,
         'exclude': filter_user_pattern()
     }
-    return data.ex(finder)
+    return list(data.ex(finder))
 
 
-def load_one(filter_data: dict, no_filter_pattern: bool = False) -> dict:
+def load_one(filter_data: dict, exclude_keys: bool = True) -> dict:
     finder = {
         'collection': 'users',
         'filter': filter_data
     }
-    if not no_filter_pattern:
+    if exclude_keys == True:
         finder['exclude'] = filter_user_pattern()
     return data.one(finder)
 
@@ -34,6 +34,9 @@ def insert(user_data: dict) -> dict:
     if result['status'] == True:
 
         user = user_model(user_data)
+        users_collection = app.db['users']
+        # users_collection.create_index("username", unique=True)
+        # users_collection.create_index("email", unique=True)
 
         finder = load_one({
             '$or': [
@@ -43,8 +46,6 @@ def insert(user_data: dict) -> dict:
         })
 
         if type(finder) is not dict:
-
-            users_collection = app.db['users']
             user['pwd'] = secret.token_urlsafe(64)
             user['salt'] = secret.token_rand(64)
             user['secret'] = hash_user(user)
@@ -147,6 +148,7 @@ def modify(user_data: dict) -> dict:
                 html_template = 'modify'
 
             user['secret'] = hash_user(user)
+            user['updater'] = app.config['user']['_id']
             user['updated_at'] = utils.now()
 
             if 'created_at' not in modify_user:
@@ -286,13 +288,13 @@ def activation_link(user_data: dict, http_origin: str = '') -> str:
     link = ""
 
     if int(user_data['pin']) > 99999:
-        client_url = compose_client_url(user_data, http_origin)
+        client_url = compose_client_url(http_origin)
         link = f"{client_url}/activate/?ulc={str(user_data['ulc'])}&pin={str(user_data['pin'])}"
 
     return link
 
 
-def compose_client_url(user_data: dict, http_origin: str = '') -> str:
+def compose_client_url(http_origin: str = '') -> str:
     if len(http_origin) > 0 and http_origin.startswith(('http://', 'https://')):
         if http_origin.endswith('/'):
             return http_origin[:-1]
@@ -366,6 +368,7 @@ def system_user() -> dict:
         'username': 'system'
     })
 
+    print('SYYYYYYYYYYYYYYYYYS', finder)
     if type(finder) is not dict:
         create_system_user()
 
@@ -387,6 +390,8 @@ def create_system_user() -> dict:
     })
 
     users_collection = app.db['users']
+    users_collection.create_index("username", unique=True)
+    users_collection.create_index("email", unique=True)
 
     user['pwd'] = 'system'
     user['salt'] = secret.token_rand(64)
@@ -406,6 +411,8 @@ def user_model(user_data: dict) -> dict:
         'email': utils.eval_key('email', user_data),
         'firstname': utils.eval_key('firstname', user_data),
         'lastname': utils.eval_key('lastname', user_data),
+        'meta': utils.eval_key('meta', user_data, 'dict'),
+        'settings': utils.eval_key('settings', user_data, 'dict'),
         'role': utils.eval_key('role', user_data),
         'pin': utils.eval_key('pin', user_data, 'int'),
         'pwd': utils.eval_key('pwd', user_data),
@@ -413,8 +420,8 @@ def user_model(user_data: dict) -> dict:
         'secret': utils.eval_key('secret', user_data),
         'ulc': utils.eval_key('ulc', user_data),
         'creator': utils.eval_key('creator', user_data),
+        'updater': utils.eval_key('updater', user_data),
         'created_at': utils.eval_key('created_at', user_data),
-        'settings': utils.eval_key('settings', user_data, 'dict'),
         'updated_at': utils.eval_key('updated_at', user_data),
     }
 

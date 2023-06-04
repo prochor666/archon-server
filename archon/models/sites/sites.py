@@ -92,6 +92,7 @@ def modify(site_data: dict) -> dict:
             if 'home_dir' not in site.keys() or len(site['home_dir']) == 0:
                 site['home_dir'] = site['domain']
 
+            site['updater'] = app.config['user']['_id']
             site['updated_at'] = utils.now()
 
             changed = utils.detect_object_changes([
@@ -324,8 +325,11 @@ def site_model(site_data: dict) -> dict:
         'domain': utils.eval_key('domain', site_data),
         'dev_domain': utils.eval_key('dev_domain', site_data),
         'alias_domains': utils.eval_key('alias_domains', site_data, 'list'),
+        'meta': utils.eval_key('meta', site_data, 'dict'),
+        'settings': utils.eval_key('settings', site_data, 'dict'),
         'owner': utils.eval_key('owner', site_data),
         'creator': utils.eval_key('creator', site_data),
+        'updater': utils.eval_key('updater', site_data),
         'created_at': utils.eval_key('created_at', site_data),
         'updated_at': utils.eval_key('updated_at', site_data),
     }

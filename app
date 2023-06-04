@@ -6,7 +6,7 @@ clear
 
 if [[ -x "$PYTHON" ]];
 then
-    hypercorn --config hypercorn.toml runhttp:webapp --proxy-headers
+    hypercorn --config hypercorn.toml endpoints:webapp --proxy-headers
 else
     echo  "Python 3 is required, exiting..."
 fi

@@ -8,11 +8,7 @@ def ex(finder: dict = {}) -> list:
         return _['data_source'].find(_['filter'], _['exclude']).sort(_['sort'][0], _['sort'][1])
 
     except Exception as e:
-        return [
-            {
-                'error': f"Database server error {str(e)}"
-            }
-        ]
+        return f"Database server error {str(e)}"
 
 
 def one(finder: dict = {}) -> dict:
@@ -47,14 +43,14 @@ def collect(find_result: list) -> list:
 
 
 def proxy(finder: dict) -> dict:
-    col = finder.get('collection')
+    _collection = finder.get('collection')
     data_source = []
     _filter = finder.get('filter', None)
     _exclude = finder.get('exclude', None)
     _sort = finder.get('sort', ['Id', 1])
     
-    if type(col) is str:
-        data_source = app.db[col]
+    if type(_collection) is str:
+        data_source = app.db[_collection]
         
         if type(data_source) is pymongo.collection.Collection:
             _from_str = {

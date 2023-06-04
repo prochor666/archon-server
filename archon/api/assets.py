@@ -5,28 +5,11 @@ from archon.models.notifications import notifications
 from archon.models.servers import servers
 from archon.models.scripts import scripts
 from archon.models.sites import sites
+from archon.models import items
 from archon.network import monitoring
 
-# notifications
-def _notifications(data_pass: dict = {}) -> dict:
 
-    data_filter = utils.apply_filter(data_pass)
-    u = notifications.load(data_filter['filter'], data_filter['sort'], data_filter['exclude'])
-
-    result = {
-        'status': False,
-        'message': str(u) if type(u) is str else "No servers",
-        'notifications': [],
-        'count': 0 if type(u) is str or u == None else u.count() # type: ignore
-    }
-    if result['count'] > 0:
-        result['status'] = True
-        result['message'] = f"Found notifications: {result['count']}"
-        result['notifications'] = data.collect(u)
-
-    return result
-
-# servers
+# Server modifiers and listings
 def _servers(data_pass: dict = {}) -> dict:
 
     data_filter = utils.apply_filter(data_pass)
@@ -62,7 +45,7 @@ def _delete_server(data_pass: dict = {}) -> dict:
     return result
 
 
-# scripts
+# Script modifiers and listings
 def _scripts(data_pass: dict = {}) -> dict:
 
     data_filter = utils.apply_filter(data_pass)
@@ -98,7 +81,7 @@ def _delete_script(data_pass: dict = {}) -> dict:
     return result
 
 
-# Sites
+# Site modifiers and listings
 def _sites(data_pass: dict = {}) -> dict:
 
     data_filter = utils.apply_filter(data_pass)
@@ -145,6 +128,43 @@ def _delete_site(data_pass: dict = {}) -> dict:
     return result
 
 
+# Item modifiers and listings
+def _items(data_pass: dict = {}) -> dict:
+
+    data_filter = utils.apply_filter(data_pass)
+    u = items.load(
+        data_filter['filter'], data_filter['sort'], data_filter['exclude'])
+
+    result = {
+        'status': False,
+        'message': str(u) if type(u) is str else "No items",
+        'items': [],
+        'count': 0 if type(u) is str or u == None else len(u)
+    }
+    if result['count'] > 0:
+        result['status'] = True
+        result['message'] = f"Found items: {result['count']}"
+        result['items'] = data.collect(u)
+
+    return result
+
+
+def _create_item(data_pass: dict = {}) -> dict:
+    result = items.insert(data_pass)
+    return result
+
+
+def _modify_item(data_pass: dict = {}) -> dict:
+    result = items.modify(data_pass)
+    return result
+
+
+def _delete_item(data_pass: dict = {}) -> dict:
+    result = items.delete(data_pass)
+    return result
+
+
+# Search
 def _search(data_pass: dict) -> dict:
     if type(data_pass) is dict and 'search' in data_pass:
         r = utils.index_eval()
@@ -214,45 +234,21 @@ def _search(data_pass: dict) -> dict:
     return {}
 
 
-# Plugins
-def _plugin(data_pass: dict = {}) -> dict:
+# Notifications
+def _notifications(data_pass: dict = {}) -> dict:
+
+    data_filter = utils.apply_filter(data_pass)
+    u = notifications.load(data_filter['filter'], data_filter['sort'], data_filter['exclude'])
 
     result = {
         'status': False,
-        'message': f"Plugin is not defined",
-        'data': []
+        'message': str(u) if type(u) is str else "No servers",
+        'notifications': [],
+        'count': 0 if type(u) is str or u == None else u.count() # type: ignore
     }
-
-    if type(data_pass) is dict and 'plugin' in data_pass:
-
-        result['message'] = f"Plugin {data_pass['plugin']} is not installed"
-
-        plugin_spec = importlib.util.find_spec(
-            f"core.plugins.{data_pass['plugin']}")
-
-        if plugin_spec is not None:
-
-            result['message'] = f"Plugin {data_pass['plugin']} is not valid"
-
-            plugin_spec_valid = importlib.util.find_spec(
-                f"core.plugins.{data_pass['plugin']}.plugin")
-
-            if plugin_spec_valid is not None:
-
-                plugin = getattr(__import__(
-                    f"core.plugins.{data_pass['plugin']}", fromlist=['plugin']), 'plugin')
-
-                plugin_filter = None
-                if 'filter' in data_pass:
-                    plugin_filter = data_pass['filter']
-
-                result['data'] = plugin.load(
-                    data_pass['plugin_method'], plugin_filter)
-
-                if result['data'] == False:
-                    result['message'] = 'Plugin is disabled or method is unknown'
-                else:
-                    result['status'] = True
-                    result['message'] = 'Plugin results'
+    if result['count'] > 0:
+        result['status'] = True
+        result['message'] = f"Found notifications: {result['count']}"
+        result['notifications'] = data.collect(u)
 
     return result

@@ -37,7 +37,6 @@ def read_root(request: Request, response: Response):
 @webapp.patch("/api/v1/{endpoint}/{id}", status_code=status.HTTP_200_OK)
 @webapp.delete("/api/v1/{endpoint}/{id}", status_code=status.HTTP_200_OK)
 async def respond(endpoint: str, request: Request, response: Response, id: str = '') -> dict:
-    
     # Check request headers
     # print(str(type(request.client)))
     app.store['client_ip'] = str(request.client.host)
@@ -50,15 +49,12 @@ async def respond(endpoint: str, request: Request, response: Response, id: str =
 
     endpoint = str(endpoint).replace('/', '')
     _id = str(id).replace('/', '')
-
     reason = f"API endpoint {endpoint} is not supported"
     module_status = False
     result = None
-    
     logged = authorization.authorization_process(endpoint, request.method, request.headers.get('Authorization')) # type: ignore
-    
     data_pass = {}
-    
+
     #if endpoint != None and endpoint in dir(api):
     if endpoint != None and endpoint in app.config['api']['rest'].keys():
         reason = f"API route: {endpoint} method {request.method} not allowed"
@@ -69,14 +65,11 @@ async def respond(endpoint: str, request: Request, response: Response, id: str =
             str(request.headers.get('Content-type')).startswith('application/json'):
 
             reason = f"API route: {endpoint} method {request.method} allowed"
-                
-            if request.method == 'GET':
-                request_data = request.get
-            else: 
-                request_data = await request.json()
 
-            if type(request_data): 
-                request_data.update(data_pass)
+            if request.method == 'GET':
+                data_pass = request.get
+            else: 
+                data_pass = await request.json()
 
         if  type(data_pass) != dict:
             data_pass = {
@@ -98,10 +91,9 @@ async def respond(endpoint: str, request: Request, response: Response, id: str =
             module_status = True
 
             if endpoint != 'login':
-                parsed_decorator = app.config['api']['rest'][endpoint]['http_request_methods'][request.method]['decorator'].split('.')
-                module = parsed_decorator[0]
-                method = parsed_decorator[1]
-
+                parsed_api_method = app.config['api']['rest'][endpoint]['http_request_methods'][request.method]['api_method'].split('.')
+                module = parsed_api_method[0]
+                method = parsed_api_method[1]
                 obj = globals()
                 result = getattr(obj[module], method)(data_pass)
         else:
@@ -115,8 +107,6 @@ async def respond(endpoint: str, request: Request, response: Response, id: str =
         'reason': reason,
         'result': result,
         'data_pass': data_pass,
-        #'auth': logged,
-        #'id': 0 if _id == 'None' else _id,
     }
 
     return res

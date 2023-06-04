@@ -8,15 +8,26 @@ from archon import app, colors
 import dns.resolver
 
 
-def database_check():
+def database_check() -> dict:
+
+    driver = app.config['db_driver']
+    output = {
+        'db_config': f"{app.config['db'][driver]['host']}:{str(app.config['db']['mongodb']['port'])}"
+    }
+
     try:
         db_info = app.db_client.server_info()
         db_db = app.db_client.list_database_names()
-        print(
-            f"{colors.fg('DB INSTANCE', 'green')}: MongoDB version {db_info['version']} at {app.config['mongodb']['host']}:{str(app.config['mongodb']['port'])}")
-        print(f"{colors.fg('DATABASES', 'blue')}: {db_db}")
+        output['db_instance'] = db_info
+        output['databases'] = db_db
+        output['status'] = True
+        output['message'] = f"MongoDb version {db_info['version']} connected, verbose info:"
+
     except Exception as error:
-        print(f"{colors.fg('DATABASE ERROR', 'red')}: {str(error)}")
+        output['status'] = False
+        output['message'] = str(error)
+
+    return output
 
 
 def byte_size(bytes: float, suffix: str ="B") -> str:
@@ -205,27 +216,30 @@ def file_save(file: str, content: str =' ') -> bool:
     return True
 
 
-def eval_key(key, data={}, data_type='str') -> str | int | dict | list | bool | None:
+def eval_key(key: str, data: dict = {}, data_type: str = 'str') -> str | int | float | dict | list | bool | None:
     if data_type == 'str':
-        return '' if type(data) is dict and str(key) not in data.keys() else str(data[key])
+        return '' if key not in data.keys() or type(data[key]) is not str else data[key]
 
     if data_type == 'int':
-        return 0 if type(data) is dict and str(key) not in data.keys() else int(data[key])
+        return 0 if key not in data.keys() or type(data[key]) is not int else data[key]
+
+    if data_type == 'float':
+        return 0 if key not in data.keys() or type(data[key]) is not float else data[key]
 
     if data_type == 'dict':
-        return {} if type(data) is dict and str(key) not in data.keys() or type(data[key]) is not dict else data[key]
+        return {} if key not in data.keys() or type(data[key]) is not dict else data[key]
 
     if data_type == 'list':
-        return [] if type(data) is dict and str(key) not in data.keys() or type(data[key]) is not list else data[key]
+        return [] if key not in data.keys() or type(data[key]) is not list else data[key]
 
     if data_type == 'bool':
-        return False if type(data) is dict and str(key) not in data.keys() else bool(data[key])
+        return False if key not in data.keys() or type(data[key]) is not bool else data[key]
 
     if data_type == 'ipv4':
-        return '' if type(data) is dict and str(key) not in data.keys() and ip_valid(data[key])['version'] == 4 else str(data[key])
+        return '' if key not in data.keys() or type(data[key]) is not str or ip_valid(data[key])['version'] != 4 else str(data[key])
 
     if data_type == 'ipv6':
-        return '' if type(data) is dict and str(key) not in data.keys() and ip_valid(data[key])['version'] == 6 else str(data[key])
+        return '' if key not in data.keys() or type(data[key]) is not str or ip_valid(data[key])['version'] != 6 else str(data[key])
     
     return None
 

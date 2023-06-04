@@ -84,6 +84,7 @@ def modify(server_data: dict) -> dict:
                 server.update(modify_server)
                 server.update(server_data)
 
+                server['updater'] = app.config['user']['_id']
                 server['updated_at'] = utils.now()
 
                 servers = app.db['servers']
@@ -253,8 +254,11 @@ def server_model(server_data: dict) -> dict:
         'ssh_key': utils.eval_key('ssh_key', server_data),
         'publish': utils.eval_key('publish', server_data, 'bool'),
         'use': utils.eval_key('use', server_data, 'bool'),
+        'meta': utils.eval_key('meta', server_data, 'dict'),
+        'settings': utils.eval_key('settings', server_data, 'dict'),
         'owner': utils.eval_key('owner', server_data),
         'creator': utils.eval_key('creator', server_data),
+        'updater': utils.eval_key('updater', server_data),
         'created_at': utils.eval_key('created_at', server_data),
         'updated_at': utils.eval_key('updated_at', server_data),
     }

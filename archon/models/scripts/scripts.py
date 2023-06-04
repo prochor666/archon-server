@@ -64,6 +64,7 @@ def modify(script_data: dict):
             script.update(modify_script)
             script.update(script_data)
 
+            script['updater'] = app.config['user']['_id']
             script['updated_at'] = utils.now()
 
             changed = utils.detect_object_changes([
@@ -205,7 +206,10 @@ def _model(script_data: dict):
         'safe': utils.eval_key('safe', script_data, 'bool'),
         'target': utils.eval_key('target', script_data),
         'content': utils.eval_key('content', script_data),
+        'meta': utils.eval_key('meta', script_data, 'dict'),
+        'settings': utils.eval_key('settings', script_data, 'dict'),
         'creator': utils.eval_key('creator', script_data),
+        'updater': utils.eval_key('updater', script_data),
         'created_at': utils.eval_key('created_at', script_data),
         'updated_at': utils.eval_key('updated_at', script_data),
     }
