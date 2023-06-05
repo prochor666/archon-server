@@ -41,7 +41,7 @@ api:
       authorized: false
       http_request_methods:
         GET:
-          api_method: users._activate_user
+          api_method: users._user_activate
           valid_schema:
             v1: {}
     soft_recovery:
@@ -170,7 +170,7 @@ api:
           valid_schema:
             v1: {}
         PATCH:
-          api_method: users._activate_user
+          api_method: users._user_activate
           valid_schema:
             v1: {}
         DELETE:

@@ -1,14 +1,12 @@
-from archon import app 
+from archon import app, utils
 from archon.config import load_config
 from archon.mailer import mailer
-from archon.system import device
-
 
 def _test(data_pass: dict = {}) -> dict:
     return {
-        'test': "Ok",
+        'status': True,
+        'test': 'Ok',
         'mode': app.mode,
-        'data_pass': data_pass
     }
 
 
@@ -16,8 +14,12 @@ def _get_enums(data_pass: dict = {}) -> dict:
     return app.config['enum_options']
 
 
-def _is_email(data_pass: dict = {}) -> dict:
-    return mailer.check_email(data_pass)
+def _is_email(email: str = '') -> dict:
+    return mailer.check_email(email)
+
+
+def _is_ip(ip: str) -> dict:
+    return utils.ip_valid(ip)
 
 
 def _countries(data_pass: dict = {}) -> list:

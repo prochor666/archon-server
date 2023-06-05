@@ -345,7 +345,7 @@ def validator(user_data: dict) -> dict:
             result['message'] = "Enter valid email address"
             return result
 
-        email_validation = mailer.check_email(user_data)
+        email_validation = mailer.check_email(user_data['email'])
         if not email_validation['valid']:
             result['message'] = f"Email '{user_data['email']}' is invalid. {email_validation['description']}"
             return result

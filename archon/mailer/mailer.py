@@ -96,34 +96,26 @@ def email_compose(email: dict, att: str = '') -> MIMEMultipart:
     return msg
 
 
-def check_email(data_pass: dict = {}) -> dict:
+def check_email(email: str = '') -> dict:
 
     result = {
-        'valid': False,
+        'status': False,
         'code': -1000,
-        'code_type': str(type(-1000).__name__),
-        'validator_message': 'check_email no_email',
-        'description': 'Invalid response',
-        'email': ''
+        'validator_message': 'Validator library (pyIsEmail::is_email) warning',
+        'description': '',
+        'email': email
     }
 
-    if 'email' in data_pass.keys():
-        
-        result['validator_message'] = 'Validator library (pyIsEmail::is_email) warning'
-        
-        _is_email = is_email(str(data_pass['email']), allow_gtld=True, check_dns=False, diagnose=True)
+    _is_email = is_email(str(email), allow_gtld=True, check_dns=False, diagnose=True)
 
-        result['email'] = str(data_pass['email'])
+    # print(type(_is_email), _is_email)
+    if type(_is_email) is pyisemail.diagnosis.valid_diagnosis.ValidDiagnosis:
+    
+        result['status'] = True if _is_email.code == 0 else False
+        result['code'] = _is_email.code
+        result['validator_message'] = _is_email.message
+        result['description'] = _is_email.description
 
-        # print(type(_is_email), _is_email)
-        if type(_is_email) is pyisemail.diagnosis.valid_diagnosis.ValidDiagnosis:
-        
-            result['valid'] = True if _is_email.code == 0 else False
-            result['code'] = _is_email.code
-            result['code_type'] = str(type(_is_email.code).__name__)
-            result['validator_message'] = _is_email.message
-            result['description'] = _is_email.description
-            
     return result
 
 

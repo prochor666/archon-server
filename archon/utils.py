@@ -95,8 +95,10 @@ def validate_data_pass(d: dict) -> dict:
 
 def ip_valid(ip: str) -> dict:
     r = {
+        'status': False,
         'ip': ip,
         'version': 0,
+        'message': 'Invalid input',
         'is_global': False,
         'is_multicast': False,
         'is_private': False,
@@ -106,6 +108,8 @@ def ip_valid(ip: str) -> dict:
     }
     try:
         i = ipaddress.ip_address(ip)
+        if i.version == 4 or i.version == 6:
+            r['status'] = True
         r['version'] = i.version
         r['is_global'] = i.is_global
         r['is_multicast'] = i.is_multicast
@@ -114,7 +118,8 @@ def ip_valid(ip: str) -> dict:
         r['is_loopback'] = i.is_loopback
         r['is_link_local'] = i.is_link_local
         return r
-    except:
+    except Exception as e:
+        r['message'] = str(e)
         return r
 
 

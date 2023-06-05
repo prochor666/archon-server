@@ -52,12 +52,10 @@ async def respond(
     request: Request) -> dict:
 
     set_client_ip(request)
-
+    
     match endpoint:
         case 'test':
-            return common._test({
-                'test': 'Ok'
-            })
+            return common._test()
         case 'get_enums':
             return common._get_enums()
         case '_countries':
@@ -92,6 +90,27 @@ async def respond(
             return bad_status(f"Endpoint {endpoint} not enabled")
 
 
+# Validation
+@webapp.post("/api/v1/validation/{endpoint}", status_code=status.HTTP_200_OK)
+async def respond(
+    endpoint: str,
+    response: Response, 
+    request: Request, 
+    ip: str = None,
+    email: str = None) -> dict:
+    
+    set_client_ip(request)
+    endpoint = str(endpoint).replace('/', '')
+
+    match endpoint:
+        case 'is_email':
+            return common._is_email(email)
+        case 'is_ip':
+            return common._is_ip(ip)
+        case _:
+            response.status_code = status.HTTP_400_BAD_REQUEST
+            return bad_status(f"Endpoint {endpoint} not enabled")
+
 # Browser
 @webapp.get("/api/v1/{endpoint}", status_code=status.HTTP_200_OK)
 async def respond(
@@ -105,16 +124,6 @@ async def respond(
     set_client_ip(request)
 
     match endpoint:
-        case 'system':
-            return system._system()
-        case 'network':
-            return system._network()
-        case 'cpu':
-            return system._cpu()
-        case 'memory':
-            return system._memory()
-        case 'disk':
-            return system._disk()
         case 'users':
             return users._users({
                 'filter': filter,

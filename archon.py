@@ -8,6 +8,18 @@ compat.check_version()
 app.mode = 'cli'
 
 
+def callback_with_vars(endpoint_schema: dict, data_pass: dict) -> dict:
+    result = {}
+    for required_arg in endpoint_schema['required']:
+        if required_arg in data_pass:
+            result[required_arg] = data_pass[required_arg]
+
+    for optional_arg in endpoint_schema['optional']:
+        if optional_arg in data_pass:
+            result[optional_arg] = data_pass[optional_arg]
+
+    return result
+
 def create_endpoint_argset(endpoint: str) -> dict:
     argset = {
         "api_method": "",
@@ -49,6 +61,8 @@ def cli_app():
     data_pass = utils.validate_data_pass(vars(args))
     endpoint = data_pass.pop('endpoint', None)
 
+    function_args = {}
+
     if endpoint != None and endpoint in app.config['api']['cli']:
 
         endpoint_schema = create_endpoint_argset(endpoint)
@@ -65,49 +79,53 @@ def cli_app():
         app.store['user'] = users._get_system_user()
 
         if type(app.store['user']) is dict:
+            
+            function_args = callback_with_vars(endpoint_schema, data_pass)
             parsed_api_method = app.config['api']['cli'][endpoint]['api_method'].split('.')
             module = parsed_api_method[0]
             method = parsed_api_method[1]
-
-            obj = globals()
-            result = getattr(obj[module], method)(data_pass)
-
             who = f" 👽 {app.store['user']['username']}@Archon-{app.config['version']} "
             intro = f"{colors.mod(who, 'lightcyan_ex', 'blue')}"
-            data_mode = f"Result type: {type(result).__name__}  "
-            data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'magenta')}"
 
-            status = True
-            message = f"task '{endpoint}' completed"
+            try: 
+                obj = globals()
+                result = getattr(obj[module], method)(**function_args)
+                data_mode = f"{endpoint} result is: {type(result).__name__}  "
+                data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'magenta')}"
+                status = True
+                message = f"task '{endpoint}' completed"
 
-            if 'status' in result:
-                status = result['status']
-                result.pop('status', None)
+                if status == False:
+                    data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'red')}"
 
-            if 'message' in result:
-                message = result['message']
-                result.pop('message', None)
+                method_response = utils.format_response(status, message)
 
-            if status == False:
-                data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'red')}"
+                if type(result) == dict or \
+                    type(result) == list or \
+                    type(result) == tuple or \
+                    type(result) == set:
+                    result_output = json.dumps(result, indent=4)
+                else: 
+                    result_output = str(result)
 
-            method_response = utils.format_response(status, message)
+                output_buffer.append('')
+                output_buffer.append(intro + data_status_and_mode)
+                output_buffer.append('')
+                output_buffer.append(method_response)
+                output_buffer.append(result_output)
+                output_buffer.append('')
 
-            if type(result) == dict or \
-                type(result) == list or \
-                type(result) == tuple or \
-                type(result) == set:
-                result_output = json.dumps(result, indent=4)
-            else: 
-                result_output = str(result)
+            except Exception as e:
+                status = False
+                data_mode = f"{endpoint} "
+                data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'magenta')}"
+                method_response = utils.format_response(status, str(e))
 
-            output_buffer.append('')
-            output_buffer.append(intro + data_status_and_mode)
-            output_buffer.append('')
-            output_buffer.append(method_response)
-            output_buffer.append(result_output)
-            output_buffer.append('')
-
+                output_buffer.append('')
+                output_buffer.append(intro + data_status_and_mode)
+                output_buffer.append('')
+                output_buffer.append(method_response)
+                output_buffer.append('')
     else:
         output_buffer.append(
             utils.format_response(False, f"endpoint '{endpoint}' 👻 is not allowed"))

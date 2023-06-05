@@ -41,6 +41,6 @@ def _user_delete(data_pass: dict = {}) -> dict:
     return result
 
 
-def _activate_user(data_pass: dict = {}) -> dict:
+def _user_activate(data_pass: dict = {}) -> dict:
     result = users.activate(data_pass)
     return result
