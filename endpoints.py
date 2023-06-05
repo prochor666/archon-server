@@ -112,7 +112,7 @@ async def respond(
             return bad_status(f"Endpoint {endpoint} not enabled")
 
 # Browser
-@webapp.get("/api/v1/{endpoint}", status_code=status.HTTP_200_OK)
+@webapp.get("/api/v1/browse/{endpoint}", status_code=status.HTTP_200_OK)
 async def respond(
     endpoint: str,
     response: Response, 

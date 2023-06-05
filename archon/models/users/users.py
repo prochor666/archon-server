@@ -194,67 +194,60 @@ def modify(user_data: dict) -> dict:
     return result
 
 
-def recover(user_data: dict, soft: bool = True) -> dict:
+def recover(unifield: str, http_origin: str = '', soft: bool = True) -> dict:
     result = {
         'message': "User not found",
         'status': False,
         'recovery_type': "soft" if soft == True else "full"
     }
 
-    if type(user_data) is dict and 'username' in user_data.keys():
-        unifield = user_data['username']
+    user = load_one({
+        '$or': [
+            {'username': unifield},
+            {'email': unifield}
+        ]
+    }, no_filter_pattern=True)
 
-        user = load_one({
-            '$or': [
-                {'username': unifield},
-                {'email': unifield}
-            ]
-        }, no_filter_pattern=True)
+    if type(user) is dict:
 
-        if type(user) is dict:
+        result['message'] = f"Found user {user['username']}"
+        result['status'] = True
+        html_template = 'soft-recovery'
 
-            http_origin = ''
-            if 'http_origin' in user_data.keys():
-                http_origin = str(user_data.pop('http_origin', None))
+        user['pin'] = int(secret.pin(6))
+        user['ulc'] = secret.token_urlsafe(32)
 
-            result['message'] = f"Found user {user['username']}"
-            result['status'] = True
-            html_template = 'soft-recovery'
+        new_activation_link = activation_link(user, http_origin)
+        subject_suffix = "account activation"
 
-            user['pin'] = int(secret.pin(6))
-            user['ulc'] = secret.token_urlsafe(32)
+        if app.mode == 'cli':
+            result['pin'] = user['pin']
+            result['ulc'] = user['ulc']
+            result['activation_link'] = new_activation_link
 
-            new_activation_link = activation_link(user, http_origin)
-            subject_suffix = "account activation"
+        if soft == False:
+            user['pwd'] = secret.token_urlsafe(64)
+            user['salt'] = secret.token_rand(64)
+            user['secret'] = hash_user(user)
+            html_template = 'full-recovery'
+            subject_suffix = "account recovery"
 
-            if app.mode == 'cli':
-                result['pin'] = user['pin']
-                result['ulc'] = user['ulc']
-                result['activation_link'] = new_activation_link
+        users_collection = app.db['users']
+        user['updated_at'] = utils.now()
 
-            if soft == False:
-                user['pwd'] = secret.token_urlsafe(64)
-                user['salt'] = secret.token_rand(64)
-                user['secret'] = hash_user(user)
-                html_template = 'full-recovery'
-                subject_suffix = "account recovery"
+        users_collection.update_one({'_id': ObjectId(user['_id'])}, {'$set': user})
 
-            users_collection = app.db['users']
-            user['updated_at'] = utils.now()
+        html_message = mailer.assign_template(
+            html_template, {
+                'app_full_name': app.config['full_name'],
+                'username': user['username'],
+                'pin': user['pin'],
+                'activation_link': new_activation_link
+            })
 
-            users_collection.update_one({'_id': ObjectId(user['_id'])}, {'$set': user})
-
-            html_message = mailer.assign_template(
-                html_template, {
-                    'app_full_name': app.config['full_name'],
-                    'username': user['username'],
-                    'pin': user['pin'],
-                    'activation_link': new_activation_link
-                })
-
-            es = mailer.send(
-                user['email'], f"{app.config['name']} - {subject_suffix}", html_message)
-            result['email_status'] = es
+        es = mailer.send(
+            user['email'], f"{app.config['name']} - {subject_suffix}", html_message)
+        result['email_status'] = es
 
     return result
 
@@ -385,7 +378,8 @@ def create_system_user() -> dict:
         'firstname': 'System',
         'lastname': 'User',
         'role': 'admin',
-        'email': 'noreply@local.none'
+        'email': 'noreply@local.none',
+        'created_at': utils.now()
     })
 
     users_collection = app.db['users']

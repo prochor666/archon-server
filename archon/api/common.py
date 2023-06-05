@@ -24,3 +24,31 @@ def _is_ip(ip: str) -> dict:
 
 def _countries(data_pass: dict = {}) -> list:
     return load_config('iso-3166-1')
+
+
+def _help():
+    result = [
+        f"Usage: ./arc command -argument <value>",
+        f"HINT: for Windows use ./arc.cmd command -argument <value>",
+        "",
+    ]
+    for endpoint in app.config['api']['cli'].keys():
+        schema = app.config['api']['cli'][endpoint]['valid_schema']['v1']
+        required = []
+        optional = []
+        
+        if 'arguments' in schema:
+            args = app.config['api']['cli'][endpoint]['valid_schema']['v1']['arguments']
+
+            for key in args.keys():
+                if args[key] == True:
+                    required.append(f"-{key} <value>")
+                else: 
+                    optional.append(f"-{key} <value>")
+                
+        r = ' '.join(required)
+        o = ' '.join(optional)
+        line = f"""{endpoint} {r} {o} """
+        result.append(line)
+
+    return result
