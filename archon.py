@@ -72,14 +72,14 @@ def cli_app():
             obj = globals()
             result = getattr(obj[module], method)(data_pass)
 
-            who = f" [Archon-{app.config['version']}]@{app.store['user']['username']} "
-            intro = f"👽 {colors.mod(who, 'lightcyan_ex', 'blue')}"
-            data_mode = f" Result ok: {type(result).__name__}  "
-            data_status_and_mode = f"🧪 {colors.mod(data_mode, 'white', 'green')}"
+            who = f" 👽 {app.store['user']['username']}@Archon-{app.config['version']} "
+            intro = f"{colors.mod(who, 'lightcyan_ex', 'blue')}"
+            data_mode = f" Result type: {type(result).__name__}  "
+            data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'magenta')}"
 
             if type(result) == dict:
                 status = True
-                message = f"task '{endpoint}' completed successfully"
+                message = f"task '{endpoint}' completed"
 
                 if 'status' in result:
                     status = result['status']
@@ -90,14 +90,15 @@ def cli_app():
                     result.pop('message', None)
 
                 if status == False:
-                    data_mode = f" Result fail: {type(result).__name__}  "
-                    data_status_and_mode = f"🧪 {colors.mod(data_mode, 'white', 'red')}"
+                    data_mode = f" Result type: {type(result).__name__}  "
+                    data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'red')}"
 
                 method_response = utils.format_response(status, message)
                 result_json = json.dumps(result, indent=4)
 
-                output_buffer.append(intro)
-                output_buffer.append(data_status_and_mode)
+                output_buffer.append('')
+                output_buffer.append(intro + data_status_and_mode)
+                output_buffer.append('')
                 output_buffer.append(method_response)
                 output_buffer.append(result_json)
 

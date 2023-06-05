@@ -368,7 +368,6 @@ def system_user() -> dict:
         'username': 'system'
     })
 
-    print('SYYYYYYYYYYYYYYYYYS', finder)
     if type(finder) is not dict:
         create_system_user()
 
