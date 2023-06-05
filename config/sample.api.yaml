@@ -162,11 +162,11 @@ api:
           valid_schema:
             v1: {}
         POST:
-          api_method: users._create_user
+          api_method: users._user_create
           valid_schema:
             v1: {}
         PUT:
-          api_method: users._modify_user
+          api_method: users._user_modify
           valid_schema:
             v1: {}
         PATCH:
@@ -174,7 +174,7 @@ api:
           valid_schema:
             v1: {}
         DELETE:
-          api_method: users._delete_user
+          api_method: users._user_delete
           valid_schema:
             v1: {}
     servers:
@@ -185,11 +185,11 @@ api:
           valid_schema:
             v1: {}
         POST:
-          api_method: assets._create_server
+          api_method: assets._server_create
           valid_schema:
             v1: {}
         PUT:
-          api_method: assets._modify_server
+          api_method: assets._server_modify
           valid_schema:
             v1: {}
         PATCH:
@@ -197,7 +197,7 @@ api:
           valid_schema:
             v1: {}
         DELETE:
-          api_method: assets._delete_server
+          api_method: assets._server_delete
           valid_schema:
             v1: {}
     scripts:
@@ -208,11 +208,11 @@ api:
           valid_schema:
             v1: {}
         POST:
-          api_method: assets._create_script
+          api_method: assets._script_create
           valid_schema:
             v1: {}
         PUT:
-          api_method: assets._modify_script
+          api_method: assets._script_modify
           valid_schema:
             v1: {}
         PATCH:
@@ -220,7 +220,7 @@ api:
           valid_schema:
             v1: {}
         DELETE:
-          api_method: assets._delete_script
+          api_method: assets._script_delete
           valid_schema:
             v1: {}
     sites:
@@ -231,11 +231,11 @@ api:
           valid_schema:
             v1: {}
         POST:
-          api_method: assets._create_site
+          api_method: assets._site_create
           valid_schema:
             v1: {}
         PUT:
-          api_method: assets._modify_site
+          api_method: assets._site_modify
           valid_schema:
             v1: {}
         PATCH:
@@ -243,7 +243,7 @@ api:
           valid_schema:
             v1: {}
         DELETE:
-          api_method: assets._delete_site
+          api_method: assets._site_delete
           valid_schema:
             v1: {}
     ssh_keys:

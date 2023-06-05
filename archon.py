@@ -1,6 +1,6 @@
 import argparse, json, yaml
 from archon import app, compat, utils, colors
-from archon.api import assets, auth, common, db, network, remote, system,  users 
+from archon.api import assets, auth, common, db, network, remote, system, users 
 from archon.auth import auth as authorization
 
 
@@ -16,22 +16,22 @@ def create_endpoint_argset(endpoint: str) -> dict:
     }
     conf = app.config['api']['cli'][endpoint]
     keys = conf.keys()
-    
+
     if 'api_method' in keys:
         argset['api_method'] = conf['api_method']
-    
+
     if 'valid_schema' in keys and \
         'v1' in conf['valid_schema'].keys() and \
         'arguments' in conf['valid_schema']['v1'].keys():
-        
+
         args = conf['valid_schema']['v1']['arguments']
         for key in args.keys():
-            
+
             if args[key] == True:
                 argset['required'].append(key)
             else: 
                 argset['optional'].append(key)
-                
+
     return argset
 
 
@@ -74,52 +74,46 @@ def cli_app():
 
             who = f" 👽 {app.store['user']['username']}@Archon-{app.config['version']} "
             intro = f"{colors.mod(who, 'lightcyan_ex', 'blue')}"
-            data_mode = f" Result type: {type(result).__name__}  "
+            data_mode = f"Result type: {type(result).__name__}  "
             data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'magenta')}"
 
-            if type(result) == dict:
-                status = True
-                message = f"task '{endpoint}' completed"
+            status = True
+            message = f"task '{endpoint}' completed"
 
-                if 'status' in result:
-                    status = result['status']
-                    result.pop('status', None)
+            if 'status' in result:
+                status = result['status']
+                result.pop('status', None)
 
-                if 'message' in result:
-                    message = result['message']
-                    result.pop('message', None)
+            if 'message' in result:
+                message = result['message']
+                result.pop('message', None)
 
-                if status == False:
-                    data_mode = f" Result type: {type(result).__name__}  "
-                    data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'red')}"
+            if status == False:
+                data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'red')}"
 
-                method_response = utils.format_response(status, message)
-                result_json = json.dumps(result, indent=4)
+            method_response = utils.format_response(status, message)
 
-                output_buffer.append('')
-                output_buffer.append(intro + data_status_and_mode)
-                output_buffer.append('')
-                output_buffer.append(method_response)
-                output_buffer.append(result_json)
+            if type(result) == dict or \
+                type(result) == list or \
+                type(result) == tuple or \
+                type(result) == set:
+                result_output = json.dumps(result, indent=4)
+            else: 
+                result_output = str(result)
 
-            if type(result) == list or type(result) == tuple or type(result) == set:
-                result_json = json.dumps(result, indent=4)
-                
-                output_buffer.append(intro)
-                output_buffer.append(data_status_and_mode)
-                output_buffer.append('')
-                output_buffer.append(result_json)
-
-            output_buffer.append(' ')
+            output_buffer.append('')
+            output_buffer.append(intro + data_status_and_mode)
+            output_buffer.append('')
+            output_buffer.append(method_response)
+            output_buffer.append(result_output)
+            output_buffer.append('')
 
     else:
         output_buffer.append(
             utils.format_response(False, f"endpoint '{endpoint}' 👻 is not allowed"))
-        output_buffer.append(' ')
-
+        output_buffer.append('')
 
     print('\n'.join(output_buffer))
-    
 
 
 if __name__ == "__main__":

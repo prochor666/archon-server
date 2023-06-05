@@ -11,7 +11,6 @@ from archon.network import monitoring
 
 # Server modifiers and listings
 def _servers(data_pass: dict = {}) -> dict:
-
     data_filter = utils.apply_filter(data_pass)
     u = servers.load(
         data_filter['filter'], data_filter['sort'], data_filter['exclude'])
@@ -30,24 +29,23 @@ def _servers(data_pass: dict = {}) -> dict:
     return result
 
 
-def _create_server(data_pass: dict = {}) -> dict:
+def _server_create(data_pass: dict = {}) -> dict:
     result = servers.insert(data_pass)
     return result
 
 
-def _modify_server(data_pass: dict = {}) -> dict:
+def _server_modify(data_pass: dict = {}) -> dict:
     result = servers.modify(data_pass)
     return result
 
 
-def _delete_server(data_pass: dict = {}) -> dict:
+def _server_delete(data_pass: dict = {}) -> dict:
     result = servers.delete(data_pass)
     return result
 
 
 # Script modifiers and listings
 def _scripts(data_pass: dict = {}) -> dict:
-
     data_filter = utils.apply_filter(data_pass)
     u = scripts.load(
         data_filter['filter'], data_filter['sort'], data_filter['exclude'])
@@ -66,24 +64,23 @@ def _scripts(data_pass: dict = {}) -> dict:
     return result
 
 
-def _create_script(data_pass: dict = {}) -> dict:
+def _script_create(data_pass: dict = {}) -> dict:
     result = scripts.insert(data_pass)
     return result
 
 
-def _modify_script(data_pass: dict = {}) -> dict:
+def _script_modify(data_pass: dict = {}) -> dict:
     result = scripts.modify(data_pass)
     return result
 
 
-def _delete_script(data_pass: dict = {}) -> dict:
+def _script_delete(data_pass: dict = {}) -> dict:
     result = scripts.delete(data_pass)
     return result
 
 
 # Site modifiers and listings
 def _sites(data_pass: dict = {}) -> dict:
-
     data_filter = utils.apply_filter(data_pass)
     u = sites.load(
         data_filter['filter'], data_filter['sort'], data_filter['exclude'])
@@ -113,24 +110,23 @@ def _sites(data_pass: dict = {}) -> dict:
     return result
 
 
-def _create_site(data_pass: dict = {}) -> dict:
+def _site_create(data_pass: dict = {}) -> dict:
     result = sites.insert(data_pass)
     return result
 
 
-def _modify_site(data_pass: dict = {}) -> dict:
+def _site_modify(data_pass: dict = {}) -> dict:
     result = sites.modify(data_pass)
     return result
 
 
-def _delete_site(data_pass: dict = {}) -> dict:
+def _site_delete(data_pass: dict = {}) -> dict:
     result = sites.delete(data_pass)
     return result
 
 
 # Item modifiers and listings
 def _items(data_pass: dict = {}) -> dict:
-
     data_filter = utils.apply_filter(data_pass)
     u = items.load(
         data_filter['filter'], data_filter['sort'], data_filter['exclude'])
@@ -149,17 +145,17 @@ def _items(data_pass: dict = {}) -> dict:
     return result
 
 
-def _create_item(data_pass: dict = {}) -> dict:
+def _item_create(data_pass: dict = {}) -> dict:
     result = items.insert(data_pass)
     return result
 
 
-def _modify_item(data_pass: dict = {}) -> dict:
+def _item_modify(data_pass: dict = {}) -> dict:
     result = items.modify(data_pass)
     return result
 
 
-def _delete_item(data_pass: dict = {}) -> dict:
+def _item_delete(data_pass: dict = {}) -> dict:
     result = items.delete(data_pass)
     return result
 

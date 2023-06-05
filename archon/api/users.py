@@ -3,7 +3,6 @@ from archon.models.users import users
 
 
 def _users(data_pass: dict = {}) -> dict:
-
     data_filter = utils.apply_filter(data_pass)
     u = users.load(data_filter['filter'], data_filter['sort']) 
 
@@ -27,17 +26,17 @@ def _get_system_user(data_pass: dict = {}) -> dict:
     return users.system_user()
 
 
-def _create_user(data_pass: dict = {}) -> dict:
+def _user_create(data_pass: dict = {}) -> dict:
     result = users.insert(data_pass)
     return result
 
 
-def _modify_user(data_pass: dict = {}) -> dict:
+def _user_modify(data_pass: dict = {}) -> dict:
     result = users.modify(data_pass)
     return result
 
 
-def _delete_user(data_pass: dict = {}) -> dict:
+def _user_delete(data_pass: dict = {}) -> dict:
     result = users.delete(data_pass)
     return result
 

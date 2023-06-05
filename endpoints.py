@@ -44,6 +44,29 @@ def bad_status(message = ''):
     }
 
 
+# Common info
+@webapp.get("/api/v1/common/{endpoint}", status_code=status.HTTP_200_OK)
+async def respond(
+    endpoint: str,
+    response: Response, 
+    request: Request) -> dict:
+
+    set_client_ip(request)
+
+    match endpoint:
+        case 'test':
+            return common._test({
+                'test': 'Ok'
+            })
+        case 'get_enums':
+            return common._get_enums()
+        case '_countries':
+            return common._countries()
+        case _:
+            response.status_code = status.HTTP_400_BAD_REQUEST
+            return bad_status(f"Endpoint {endpoint} not enabled")
+
+
 # System HW/SW
 @webapp.get("/api/v1/system/{endpoint}", status_code=status.HTTP_200_OK)
 async def respond(
@@ -67,30 +90,6 @@ async def respond(
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return bad_status(f"Endpoint {endpoint} not enabled")
-
-
-# Common info
-@webapp.get("/api/v1/common/{endpoint}", status_code=status.HTTP_200_OK)
-async def respond(
-    endpoint: str,
-    response: Response, 
-    request: Request) -> dict:
-
-    set_client_ip(request)
-
-    match endpoint:
-        case 'test':
-            return common._test({
-                'test': 'Ok'
-            })
-        case 'get_enums':
-            return common._get_enums()
-        case '_countries':
-            return common._countries()
-        case _:
-            response.status_code = status.HTTP_400_BAD_REQUEST
-            return bad_status(f"Endpoint {endpoint} not enabled")
-
 
 
 # Browser
@@ -213,18 +212,19 @@ async def respond(
 
     match endpoint:
         case 'users':
-            return users._create_user()
+            return users._user_create()
         case 'servers':
-            return assets._create_server(data)
+            return assets._server_create(data)
         case 'scripts':
-            return assets._create_script(data)
+            return assets._script_create(data)
         case 'sites':
-            return assets._create_site(data)
+            return assets._site_create(data)
         case 'items':
-            return assets._create_item(data)
+            return assets._item_create(data)
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return bad_status(f"Endpoint {endpoint} not enabled")
+
 
 # Modify item
 @webapp.put("/api/v1/{endpoint}/{id}", status_code=status.HTTP_200_OK)
@@ -242,15 +242,15 @@ async def respond(
 
     match endpoint:
         case 'users':
-            return users._modify_user(data)
+            return users._user_modify(data)
         case 'servers':
-            return assets._modify_server(data)
+            return assets._server_modify(data)
         case 'scripts':
-            return assets._modify_script(data)
+            return assets._script_modify(data)
         case 'sites':
-            return assets._modify_site(data)
+            return assets._site_modify(data)
         case 'items':
-            return assets._modify_item(data)
+            return assets._item_modify(data)
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return bad_status(f"Endpoint {endpoint} not enabled")
@@ -273,15 +273,15 @@ async def respond(
 
     match endpoint:
         case 'users':
-            return users._delete_user(data)
+            return users._user_delete(data)
         case 'servers':
-            return assets._delete_server(data)
+            return assets._server_delete(data)
         case 'scripts':
-            return assets._delete_script(data)
+            return assets._script_delete(data)
         case 'sites':
-            return assets._delete_site(data)
+            return assets._site_delete(data)
         case 'items':
-            return assets._delete_item(data)
+            return assets._item_delete(data)
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return bad_status(f"Endpoint {endpoint} not enabled")
