@@ -87,7 +87,8 @@ def format_response(status: bool, text: str) -> str:
 
 def validate_data_pass(d: dict) -> dict:
     result = {}
-    for k, v in d.items():
+    for k in d.keys():
+        v = d[k]
         if v != None:
             result[k] = v
     return result
@@ -110,6 +111,7 @@ def ip_valid(ip: str) -> dict:
         i = ipaddress.ip_address(ip)
         if i.version == 4 or i.version == 6:
             r['status'] = True
+            r['message'] = 'IP validated'
         r['version'] = i.version
         r['is_global'] = i.is_global
         r['is_multicast'] = i.is_multicast

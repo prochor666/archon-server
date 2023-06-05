@@ -1,4 +1,4 @@
-from archon import app, utils
+from archon import app, colors, utils
 from archon.config import load_config
 from archon.mailer import mailer
 
@@ -27,11 +27,16 @@ def _countries(data_pass: dict = {}) -> list:
 
 
 def _help():
-    result = [
-        f"Usage: ./arc command -argument <value>",
-        f"HINT: for Windows use ./arc.cmd command -argument <value>",
-        "",
-    ]
+    result = f"""{colors.fg('Archon help', 'LIGHTGREEN_EX')}
+{colors.fg('Linux/Mac', 'LIGHTGREEN_EX')}: ./arc command -argument <value>
+{colors.fg('Windows', 'LIGHTGREEN_EX')}: arc.cmd command -argument <value>
+---------------------------------------
+Commands
+{colors.fg('**', 'lightred_ex')}  required
+{colors.fg('**', 'lightgreen_ex')}  optional
+---------------------------------------
+"""
+
     for endpoint in app.config['api']['cli'].keys():
         schema = app.config['api']['cli'][endpoint]['valid_schema']['v1']
         required = []
@@ -42,13 +47,14 @@ def _help():
 
             for key in args.keys():
                 if args[key] == True:
-                    required.append(f"-{key} <value>")
+                    required.append(f" -{colors.fg(key, 'lightred_ex')} <value>")
                 else: 
-                    optional.append(f"-{key} <value>")
-                
-        r = ' '.join(required)
-        o = ' '.join(optional)
-        line = f"""{endpoint} {r} {o} """
-        result.append(line)
+                    optional.append(f" -{colors.fg(key, 'lightgreen_ex')} <value>")
+
+        r = ''.join(required)
+        o = ''.join(optional)
+        line = f"""
+    {colors.fg(endpoint, 'lightcyan_ex')}{r}{o}"""
+        result = result + line
 
     return result

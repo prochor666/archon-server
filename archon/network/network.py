@@ -53,8 +53,8 @@ def scan_ip(ip: str, ports: list = [21, 22, 80, 443, 3306]) -> dict:
     try:
         for port in ports:
 
-            port = int(port)
             try:
+                port = int(port)
                 if ip_version == 4:
                     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 

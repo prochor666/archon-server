@@ -71,9 +71,10 @@ def cli_app():
             parser.add_argument(f"-{required_arg}", type=str)
 
         for optional_arg in endpoint_schema['optional']:
-            parser.add_argument(f"-{optional_arg}", type=str, nargs='+')
+            parser.add_argument(f"-{optional_arg}", type=str)
 
-        #args, unknown = parser.parse_known_args()
+        args, unknown = parser.parse_known_args()
+        # data_pass = utils.validate_data_pass(vars(args))
         data_pass = utils.validate_data_pass(vars(parser.parse_args()))
 
         app.store['user'] = users._get_system_user()
@@ -119,13 +120,14 @@ def cli_app():
                 status = False
                 data_mode = f"{endpoint} "
                 data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'magenta')}"
-                method_response = utils.format_response(status, str(e))
+                method_response = utils.format_response(status, e)
 
                 output_buffer.append('')
                 output_buffer.append(intro + data_status_and_mode)
                 output_buffer.append('')
                 output_buffer.append(method_response)
-                output_buffer.append('')
+                output_buffer.append('') 
+
     else:
         output_buffer.append(
             utils.format_response(False, f"endpoint '{endpoint}' 👻 is not allowed"))

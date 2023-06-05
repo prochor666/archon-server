@@ -70,11 +70,11 @@ How to run (and command list incoming **soon**).
 ### 💻 Linux & Mac
 
 ```bash
-./arc soon
+./arc help
 ```
 ### 💻 Windows 
 
 ```powershell
-.\arc.cmd soon
+.\arc.cmd help
 ```
 

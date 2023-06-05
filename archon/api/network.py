@@ -13,29 +13,27 @@ def _ssh_keys(data_pass: dict = {}) -> dict:
     return result
 
 
-def _domain_info(data_pass: dict = {}) -> dict: 
+def _domain_info(domain: str, dns_records: str = None) -> dict: 
     result = {
         'status': False, 
         'message': 'Data error', 
         'data': None, 
-        'pass': data_pass
+        'domain': domain,
+        'dns_records': dns_records
     }
     record_filter = []
 
-    if 'filter' in data_pass.keys(): # type: ignore
+    if type(dns_records) is list and len(dns_records) > 0: 
+        record_filter = dns_records
 
-        if type(data_pass['filter']) is list and len(data_pass['filter']) > 0: 
-            record_filter = data_pass['filter']
+    if type(dns_records) is str and len(dns_records) > 0:
+        record_filter = dns_records.split(',')
 
-        if type(data_pass['filter']) is str and len(data_pass['filter']) > 0:
-            record_filter = data_pass['filter'].split(',')
-
-    if 'domain' in data_pass.keys():
-        result['data'] = utils.domain_dns_info(
-            str(data_pass['domain']), record_filter)
-        if len(result['data']) > 0:
-            result['message'] = f"Domain {str(data_pass['domain'])} DNS records found"
-            result['status'] = True
+    result['data'] = utils.domain_dns_info(
+        str(domain), record_filter)
+    if len(result['data']) > 0:
+        result['message'] = f"Domain {domain} DNS records found"
+        result['status'] = True
 
     return result
 
@@ -61,27 +59,27 @@ def _scan_all_interfaces(data_pass: dict = {}) -> dict:
     }
     return result
 
-def _scan_ip(data_pass: dict = {}) -> dict:
+def _scan_ip(ip: str, ports: str = None) -> dict:
 
     result = {
         'status': False,
         'message': 'Data error',
-        'data_pass': data_pass
+        'ip': ip,
+        'ports': ports
     }
 
-    if 'ip' in data_pass.keys():
-        if 'ports' in data_pass.keys() and type(data_pass['ports']) is str:
-            scan = network.scan_ip(data_pass['ip'], str(data_pass['ports']).split(',')) # type: ignore
-        elif 'ports' in data_pass.keys() and type(data_pass['ports']) is list:
-            scan = network.scan_ip(data_pass['ip'], data_pass['ports']) # type: ignore
-        else:
-            scan = network.scan_ip(data_pass['ip'])
+    if type(ports) is str:
+        scan = network.scan_ip(ip, ports.split(','))
+    elif type(ports) is list:
+        scan = network.scan_ip(ip, ports)
+    else:
+        scan = network.scan_ip(ip)
 
-        result['status'] = scan['scan_status']
-        result['message'] = scan['scan_result']
-        result['ports'] = scan['ports']
-        result['time'] = scan['time']
-        result['ttl'] = scan['ttl']
+    result['status'] = scan['scan_status']
+    result['message'] = scan['scan_result']
+    result['ports'] = scan['ports']
+    result['time'] = scan['time']
+    result['ttl'] = scan['ttl']
     return result
 
 
