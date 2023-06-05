@@ -4,5 +4,5 @@
     @ECHO Python 3 is required
     @EXIT /B 0
 ) ELSE (
-    @python archon.py %*
+    @python archon-cli.py %*
 )

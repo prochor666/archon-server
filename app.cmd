@@ -6,5 +6,5 @@ cls
     @ECHO Python 3 is required
     @EXIT /B 0
 ) ELSE (
-    hypercorn --config hypercorn.toml endpoints:webapp
+    hypercorn --config hypercorn.toml archon-http:webapp
 )
