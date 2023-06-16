@@ -58,7 +58,7 @@ async def respond(
             return common._test()
         case 'get_enums':
             return common._get_enums()
-        case '_countries':
+        case 'countries':
             return common._countries()
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
@@ -90,29 +90,62 @@ async def respond(
             return bad_status(f"Endpoint {endpoint} not enabled")
 
 
+# Network
+@webapp.get("/api/v1/network/{endpoint}", status_code=status.HTTP_200_OK)
+async def respond(
+    endpoint: str,
+    response: Response, 
+    request: Request,
+    domain: str = None,
+    ip: str = None,
+    ports: str = None,
+    ttl: str = None) -> dict:
+
+    set_client_ip(request)
+    endpoint = str(endpoint).replace('/', '')
+
+    match endpoint:
+        case 'client_ip':
+            return network._client_ip()
+        case 'domain_info':
+            return network._domain_info(domain)
+        case 'scan_ip':
+            return network._scan_ip(ip, ports,ttl)
+        case 'ip':
+            return network._ip()
+        case 'scan_all_interfaces':
+            return network._scan_all_interfaces(ports, ttl)
+        case _:
+            response.status_code = status.HTTP_400_BAD_REQUEST
+            return bad_status(f"Endpoint {endpoint} not enabled")
+
+
 # Validation
-@webapp.post("/api/v1/validation/{endpoint}", status_code=status.HTTP_200_OK)
+@webapp.get("/api/v1/validation/{endpoint}", status_code=status.HTTP_200_OK)
 async def respond(
     endpoint: str,
     response: Response, 
     request: Request, 
     ip: str = None,
-    email: str = None) -> dict:
+    email: str = None,
+    domain: str = None) -> dict:
     
     set_client_ip(request)
     endpoint = str(endpoint).replace('/', '')
 
     match endpoint:
-        case 'is_email':
+        case 'email':
             return common._is_email(email)
-        case 'is_ip':
+        case 'ip':
             return common._is_ip(ip)
+        case 'domain':
+            return network._validate_domain(domain)
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return bad_status(f"Endpoint {endpoint} not enabled")
 
 # Browser
-@webapp.get("/api/v1/browse/{endpoint}", status_code=status.HTTP_200_OK)
+@webapp.get("/api/v1/{endpoint}", status_code=status.HTTP_200_OK)
 async def respond(
     endpoint: str,
     response: Response, 
@@ -161,48 +194,28 @@ async def respond(
 
 
 # One item
-@webapp.get("/api/v1/{endpoint}/{id}", status_code=status.HTTP_200_OK)
+@webapp.get("/api/v1/{endpoint}/{_id}", status_code=status.HTTP_200_OK)
 async def respond(
     endpoint: str,
     response: Response, 
     request: Request, 
-    id: str) -> dict:
-    
+    _id: str) -> dict:
+
     set_client_ip(request)
     endpoint = str(endpoint).replace('/', '')
-    _id = str(id).replace('/', '')
+    _id = str(_id).replace('/', '')
 
     match endpoint:
         case 'users':
-            return users._users({
-                'filter': {
-                    'id': _id
-                }
-            })
+            return users._load_one(_id)
         case 'servers':
-            return assets._servers({
-                'filter': {
-                    'id': _id
-                }
-            })
+            return assets._server_one(_id)
         case 'scripts':
-            return assets._scripts({
-                'filter': {
-                    'id': _id
-                }
-            })
+            return assets._script_one(_id)
         case 'sites':
-            return assets._sites({
-                'filter': {
-                    'id': _id
-                }
-            })
+            return assets._site_one(_id)
         case 'items':
-            return assets._items({
-                'filter': {
-                    'id': _id
-                }
-            })
+            return assets._item_one(_id)
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return bad_status(f"Endpoint {endpoint} not enabled")
@@ -221,7 +234,7 @@ async def respond(
 
     match endpoint:
         case 'users':
-            return users._user_create()
+            return users._user_create(data)
         case 'servers':
             return assets._server_create(data)
         case 'scripts':

@@ -11,7 +11,12 @@ def load(filter_data: dict, sort_data: dict | None = None) -> list:
         'sort': sort_data,
         'exclude': filter_user_pattern()
     }
-    return list(data.ex(finder))
+    
+    r = data.ex(finder)
+    if type(r).__name__ == 'Cursor':  
+        return list(r)
+    else:
+        return r
 
 
 def load_one(filter_data: dict, exclude_keys: bool = True) -> dict:
@@ -21,7 +26,8 @@ def load_one(filter_data: dict, exclude_keys: bool = True) -> dict:
     }
     if exclude_keys == True:
         finder['exclude'] = filter_user_pattern()
-    return data.one(finder)
+    r = data.one(finder)
+    return r
 
 
 def filter_user_pattern() -> dict:
@@ -31,6 +37,7 @@ def filter_user_pattern() -> dict:
 def insert(user_data: dict) -> dict:
     result = validator(user_data)
 
+    print('VALIDATOR', type(user_data) is dict, user_data)
     if result['status'] == True:
 
         user = user_model(user_data)
@@ -57,7 +64,7 @@ def insert(user_data: dict) -> dict:
                 http_origin = str(user_data.pop('http_origin', None))
 
             user['created_at'] = utils.now()
-            user['creator'] = app.config['user']['_id']
+            user['creator'] = app.store['user']['_id']
 
             users_collection.insert_one(user)
 
@@ -148,14 +155,14 @@ def modify(user_data: dict) -> dict:
                 html_template = 'modify'
 
             user['secret'] = hash_user(user)
-            user['updater'] = app.config['user']['_id']
+            user['updater'] = app.store['user']['_id']
             user['updated_at'] = utils.now()
 
             if 'created_at' not in modify_user:
                 user['created_at'] = utils.now()
 
             if 'creator' not in modify_user:
-                user['creator'] = app.config['user']['_id']
+                user['creator'] = app.store['user']['_id']
 
             user = user_model(user)
             users_collection.update_one(
@@ -339,7 +346,7 @@ def validator(user_data: dict) -> dict:
             return result
 
         email_validation = mailer.check_email(user_data['email'])
-        if not email_validation['valid']:
+        if not email_validation['status']:
             result['message'] = f"Email '{user_data['email']}' is invalid. {email_validation['description']}"
             return result
 
@@ -351,6 +358,7 @@ def validator(user_data: dict) -> dict:
             result['message'] = f"{user_data['username']} is not a valid username. Only aplhanumeric and spaces are allowed"
             return result
 
+        result['message'] = 'Ok'
         result['status'] = True
 
     return result

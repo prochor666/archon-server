@@ -17,9 +17,7 @@ def one(finder: dict = {}) -> dict:
         return _['data_source'].find_one(_['filter'], _['exclude'])
 
     except Exception as e:
-        return {
-            'error': f"Database server error {str(e)}"
-        }
+        return f"Database server error {str(e)}"
 
 
 def collect_one(document: dict) -> dict:

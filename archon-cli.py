@@ -2,7 +2,7 @@ import argparse, json, yaml
 from archon import app, compat, utils, colors
 from archon.api import assets, auth, common, db, network, remote, system, users 
 from archon.auth import auth as authorization
-
+import os
 
 compat.check_version()
 app.mode = 'cli'
@@ -79,13 +79,19 @@ def cli_app():
 
         app.store['user'] = users._get_system_user()
 
+        display_username = f"[{os.getlogin()} /as {app.store['user']['username']}]"
+        if type(display_username) is not str:
+            display_username = app.store['user']['username']
+        # Consider or not to use
+        # import getpass
+        #display_username = getpass.getuser()
+
         if type(app.store['user']) is dict:
-            
             function_args = callback_with_vars(endpoint_schema, data_pass)
             parsed_api_method = app.config['api']['cli'][endpoint]['api_method'].split('.')
             module = parsed_api_method[0]
             method = parsed_api_method[1]
-            who = f" 👽 {app.store['user']['username']}@Archon-{app.config['version']} "
+            who = f" 👽 {display_username}@Archon-{app.config['version']} "
             intro = f"{colors.mod(who, 'lightcyan_ex', 'blue')}"
 
             try: 
@@ -120,7 +126,7 @@ def cli_app():
                 status = False
                 data_mode = f"{endpoint} "
                 data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'magenta')}"
-                method_response = utils.format_response(status, e)
+                method_response = utils.format_response(status, json.parse({'error': e}))
 
                 output_buffer.append('')
                 output_buffer.append(intro + data_status_and_mode)

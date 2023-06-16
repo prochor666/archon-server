@@ -82,7 +82,7 @@ def strip_end(text: str, suffix: str) -> str:
 
 
 def format_response(status: bool, text: str) -> str:
-    return f"{colors.fg('Ok', 'LIGHTGREEN_EX')}: {text}" if status == True else f"{colors.fg('Error', 'red')}: {text}"
+    return f"""{colors.fg('Ok', 'LIGHTGREEN_EX')}: {text}""" if status == True else f"""{colors.fg('Error', 'red')}: {text}"""
 
 
 def validate_data_pass(d: dict) -> dict:

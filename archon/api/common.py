@@ -22,8 +22,20 @@ def _is_ip(ip: str) -> dict:
     return utils.ip_valid(ip)
 
 
-def _countries(data_pass: dict = {}) -> list:
-    return load_config('iso-3166-1')
+def _countries() -> dict:
+    result = {
+        'status': False,
+        'message': 'Failed',
+        'data': {}
+    }
+    c = load_config('iso-3166-1')
+    l = len(c)
+    if type(c) is list and l > 0:
+        result['data'] = c
+        result['status'] = True
+        result['message'] = f"Ok, found {str(l)} countries"
+        
+    return result
 
 
 def _help():

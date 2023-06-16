@@ -2,6 +2,21 @@ import re
 from archon import app, utils
 from archon.network import network
 
+
+def ttl_from_str(ttl: str) -> float:
+    if type(ttl) is str:
+        ttl = ttl.replace(',', '.')
+        try:
+            ttl = float(ttl)
+        except ValueError:
+            pass
+    else: 
+        if 'scan_ip' in app.config and 'ttl' in app.config['scan_ip'] and type(app.config['scan_ip']["ttl"]) in [float, int]:
+            ttl = app.config['scan_ip']["ttl"]
+
+    return ttl
+
+
 def _ssh_keys(data_pass: dict = {}) -> dict:
 
     result = {
@@ -47,19 +62,43 @@ def _client_ip(data_pass: dict = {}) -> dict:
 
 
 def _ip(data_pass: dict = {}) -> list:
-    return network.device_ip()
-
-
-def _scan_all_interfaces(data_pass: dict = {}) -> dict:
-    scn = network.scan_all_interfaces()
-    result = {
+    return {
         'status': True,
-        'message': 'Scanned',
-        'data': scn
+        'message': 'Client ip address list',
+        'data': network.device_ip()
     }
+
+
+def _scan_all_interfaces(ports: list = [80, 443, 3306], ttl: str = None) -> dict:
+    ttl = ttl_from_str(ttl)
+
+    result = {
+        'status': False,
+        'message': 'Data error',
+        'data': []
+    }
+
+    if type(ttl) is not float:
+        result['message'] = 'ttl must be float'
+        return result
+
+    if type(ports) is str:
+        scan = network.scan_all_interfaces(ports.split(','), ttl)
+    else:
+        scan = network.scan_all_interfaces(ports, ttl)
+
+    if type(scan) is list and len(scan) > 0:
+        result['status'] = True
+        result['message'] = 'Scanned'
+    else:
+        result['message'] = 'No interfaces found'
+    
+    result['data'] = scan
+    
     return result
 
-def _scan_ip(ip: str, ports: str = None) -> dict:
+def _scan_ip(ip: str, ports: str = None, ttl: str = None) -> dict:
+    ttl = ttl_from_str(ttl)
 
     result = {
         'status': False,
@@ -68,13 +107,15 @@ def _scan_ip(ip: str, ports: str = None) -> dict:
         'ports': ports
     }
 
-    if type(ports) is str:
-        scan = network.scan_ip(ip, ports.split(','))
-    elif type(ports) is list:
-        scan = network.scan_ip(ip, ports)
-    else:
-        scan = network.scan_ip(ip)
+    if type(ttl) is not float:
+        result['message'] = 'ttl must be float'
+        return result
 
+    if type(ports) is str:
+        scan = network.scan_ip(ip, ports.split(','), ttl)
+    else:
+        scan = network.scan_ip(ip, ports, ttl)
+    
     result['status'] = scan['scan_status']
     result['message'] = scan['scan_result']
     result['ports'] = scan['ports']
@@ -83,20 +124,20 @@ def _scan_ip(ip: str, ports: str = None) -> dict:
     return result
 
 
-def _validate_domain(data_pass: dict = {}) -> dict:
+def _validate_domain(domain: str) -> dict:
     result = {
         'status': False,
         'message': 'Data error',
     }
 
-    if 'domain' in data_pass.keys() and type(data_pass['domain']) is str and len(data_pass['domain']) > 0:
+    if type(domain) is str and len(domain) > 0:
         pre = re.compile(
             r'^(?=.{1,253}$)(?!.*\.\..*)(?!\..*)([a-zA-Z0-9-]{,63}\.){,127}[a-zA-Z0-9-]{1,63}$')
-        if not pre.match(data_pass['domain']):
-            result['message'] = f"Domain name {data_pass['domain']} is invalid"
+        if not pre.match(domain):
+            result['message'] = f"Domain name {domain} is invalid"
         else:
             result['status'] = True
-            result['message'] = f"Domain name {data_pass['domain']} is valid"
+            result['message'] = f"Domain name {domain} is valid"
 
     return result
 

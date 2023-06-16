@@ -43,7 +43,7 @@ def load_config(custom_config):
     with open(f"{app_dirs['config']}/{custom_config}.yaml") as conf:
         data = yaml.load(conf, Loader=yaml.Loader)
         return data
-
+    
     return {}
 
 

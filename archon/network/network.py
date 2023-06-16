@@ -21,26 +21,27 @@ def ssh_port() -> int:
     return 22
 
 
-def scan_all_interfaces() -> list:
+def scan_all_interfaces(ports: list = [20, 21, 22, 23, 8080, 80, 443, 3389], ttl: float = None) -> list:
     ips = device_ip()
     result = []
     if type(ips) is list:
         for ip in ips:
-            result.append(scan_ip(ip))
+            result.append(scan_ip(ip, ports, ttl))
 
     return result
 
 
-def scan_ip(ip: str, ports: list = [21, 22, 80, 443, 3306]) -> dict:
+def scan_ip(ip: str, ports: list = [21, 22, 23, 80, 443, 3306], ttl: float = None) -> dict:
     ip_valid = utils.ip_valid(ip)
     
     start_time = time.time()
     ip_target = str(ip_valid['ip'])
     ip_version = int(ip_valid['version'])
-    ttl = 0.5 
     
-    if 'scan_ip' in app.config and 'ttl' in app.config['scan_ip'] and type(app.config['scan_ip']["ttl"]) in [float, int]:
-        ttl = app.config['scan_ip']["ttl"]
+    if type(ttl) is not float:
+        if 'scan_ip' in app.config and 'ttl' in app.config['scan_ip'] and type(app.config['scan_ip']["ttl"]) in [float, int]:
+            ttl = app.config['scan_ip']["ttl"]
+
     result = {
         'ip': ip,
         'ports': {},
