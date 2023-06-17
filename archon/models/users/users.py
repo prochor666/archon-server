@@ -37,7 +37,6 @@ def filter_user_pattern() -> dict:
 def insert(user_data: dict) -> dict:
     result = validator(user_data)
 
-    print('VALIDATOR', type(user_data) is dict, user_data)
     if result['status'] == True:
 
         user = user_model(user_data)
@@ -71,6 +70,7 @@ def insert(user_data: dict) -> dict:
             html_message = mailer.assign_template(
                 'register', {
                     'app_full_name': app.config['full_name'],
+                    'app_name': app.config['name'],
                     'username': user['username'],
                     'pin': user['pin'],
                     'activation_link': activation_link(user, http_origin)
@@ -173,6 +173,7 @@ def modify(user_data: dict) -> dict:
                 html_message = mailer.assign_template(
                     html_template, {
                         'app_full_name': app.config['full_name'],
+                        'app_name': app.config['name'],
                         'username': user['username'],
                         'pin': user['pin'],
                         'activation_link': activation_link(user, http_origin)
@@ -247,6 +248,7 @@ def recover(unifield: str, http_origin: str = '', soft: bool = True) -> dict:
         html_message = mailer.assign_template(
             html_template, {
                 'app_full_name': app.config['full_name'],
+                'app_name': app.config['name'],
                 'username': user['username'],
                 'pin': user['pin'],
                 'activation_link': new_activation_link

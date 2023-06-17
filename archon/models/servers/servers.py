@@ -170,7 +170,8 @@ def insert(server_data: dict) -> dict:
 
             # Notification comes here
             html_message_data = {
-                'app_full_name': app.config['name'],
+                'app_full_name': app.config['full_name'],
+                'app_name': app.config['name'],
                 'username': app.config['user']['username'],
                 'message': f"Site {server['name']} was created."
             }

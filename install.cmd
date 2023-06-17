@@ -42,7 +42,8 @@ IF %ERRORLEVEL% NEQ 0 (
     pip install fastapi
     pip install mysql-connector-python
     pip install colorama
-    
+    pip install jinja2
+
     IF exist storage\sites (
         echo storage\sites exists
     ) ELSE (

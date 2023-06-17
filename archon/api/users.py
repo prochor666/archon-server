@@ -53,7 +53,6 @@ def _user_create(username: str = '', email: str = '', role: str = '', firstname:
         'firstname': firstname,
         'lastname': lastname,
     }
-    print('API PROXY', type(user_data) is dict, user_data)
     result = users.insert(user_data = user_data)
     return result
 

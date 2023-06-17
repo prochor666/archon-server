@@ -6,6 +6,7 @@ from email.mime.application import MIMEApplication
 from pyisemail import is_email
 import pyisemail.diagnosis.valid_diagnosis, pyisemail.diagnosis.gtld_diagnosis
 from archon import app, utils
+import jinja2
 
 # TO-DO: attachments as dict
 # TO-DO: templates via built-in Jinja 2
@@ -120,9 +121,7 @@ def check_email(email: str = '') -> dict:
 
 
 def assign_template(template: str, data: dict) -> str:
-    
-    return f"email/{template}.html"
-    """ 
-    return render_template(
-        f"email/{template}.html", data=data)
-    """
+    templateLoader = jinja2.FileSystemLoader(searchpath="./templates")
+    templateEnv = jinja2.Environment(loader=templateLoader)
+    template = templateEnv.get_template(f"email/{template}.html")
+    return template.render(data=data)

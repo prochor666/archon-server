@@ -1,380 +1,123 @@
 api:
-  rest:
-    about:
-      authorized: false
-      http_request_methods:
-        GET:
-          api_method: common._about
-          valid_schema:
-            v1: {}
-    test:
-      authorized: false
-      http_request_methods:
-        GET:
-          api_method: common._test
-          valid_schema:
-            v1: {}
-        POST:
-          api_method: common._test
-          valid_schema:
-            v1: {}
-        PUT:
-          api_method: common._test
-          valid_schema:
-            v1: {}
-        PATCH:
-          api_method: common._test
-          valid_schema:
-            v1: {}
-        DELETE:
-          api_method: common._test
-          valid_schema:
-            v1: {}
-    client_ip:
-      authorized: false
-      http_request_methods:
-        GET:
-          api_method: network._client_ip
-          valid_schema:
-            v1: {}
-    activate_user:
-      authorized: false
-      http_request_methods:
-        GET:
-          api_method: users._user_activate
-          valid_schema:
-            v1: {}
-    soft_recovery:
-      authorized: false
-      http_request_methods:
-        GET:
-          api_method: auth._soft_recovery
-          valid_schema:
-            v1: {}
-    full_recovery:
-      http_request_methods:
-        GET:
-          api_method: auth._full_recovery
-          valid_schema:
-            v1: {}
-    system:
-      authorized: true
-      http_request_methods:
-        GET:
-          api_method: system._system
-          valid_schema:
-            v1: {}
-    network:
-      authorized: true
-      http_request_methods:
-        GET:
-          api_method: system._network
-          valid_schema:
-            v1: {}
-    cpu:
-      authorized: true
-      http_request_methods:
-        GET:
-          api_method: system._cpu
-          valid_schema:
-            v1: {}
-    memory:
-      authorized: true
-      http_request_methods:
-        GET:
-          api_method: system._memory
-          valid_schema:
-            v1: {}
-    disk:
-      authorized: true
-      http_request_methods:
-        GET:
-          api_method: system._disk
-          valid_schema:
-            v1: {}
-    login:
-      authorized: false
-      http_request_methods:
-        GET:
-          api_method: auth._login
-          valid_schema:
-            v1: {}
-        POST:
-          api_method: auth._login
-          valid_schema:
-            v1: {}
-    countries:
-      authorized: true
-      http_request_methods:
-        GET:
-          api_method: common._countries
-          valid_schema:
-            v1: {}
-    ip:
-      authorized: true
-      http_request_methods:
-        GET:
-          api_method: network._ip
-          valid_schema:
-            v1: {}
-    scan_ip:
-      authorized: true
-      http_request_methods:
-        GET:
-          api_method: network._scan_ip
-          valid_schema:
-            v1: {}
-    domain_info:
-      authorized: true
-      http_request_methods:
-        POST:
-          api_method: network._domain_info
-          valid_schema:
-            v1: {}
-    devices:
-      authorized: true
-      http_request_methods:
-        GET:
-          api_method: assets._devices
-          valid_schema:
-            v1: {}
-        POST:
-          api_method: assets._create_device
-          valid_schema:
-            v1: {}
-        PUT:
-          api_method: assets._modify_device
-          valid_schema:
-            v1: {}
-        PATCH:
-          api_method: assets._message_to_device
-          valid_schema:
-            v1: {}
-        DELETE:
-          api_method: assets._delete_device
-          valid_schema:
-            v1: {}
-    users:
-      authorized: true
-      http_request_methods:
-        GET:
-          api_method: users._users
-          valid_schema:
-            v1: {}
-        POST:
-          api_method: users._user_create
-          valid_schema:
-            v1: {}
-        PUT:
-          api_method: users._user_modify
-          valid_schema:
-            v1: {}
-        PATCH:
-          api_method: users._user_activate
-          valid_schema:
-            v1: {}
-        DELETE:
-          api_method: users._user_delete
-          valid_schema:
-            v1: {}
-    servers:
-      authorized: true
-      http_request_methods:
-        GET:
-          api_method: assets._servers
-          valid_schema:
-            v1: {}
-        POST:
-          api_method: assets._server_create
-          valid_schema:
-            v1: {}
-        PUT:
-          api_method: assets._server_modify
-          valid_schema:
-            v1: {}
-        PATCH:
-          api_method: assets._activate_server
-          valid_schema:
-            v1: {}
-        DELETE:
-          api_method: assets._server_delete
-          valid_schema:
-            v1: {}
-    scripts:
-      authorized: true
-      http_request_methods:
-        GET:
-          api_method: assets._scripts
-          valid_schema:
-            v1: {}
-        POST:
-          api_method: assets._script_create
-          valid_schema:
-            v1: {}
-        PUT:
-          api_method: assets._script_modify
-          valid_schema:
-            v1: {}
-        PATCH:
-          api_method: assets._activate_script
-          valid_schema:
-            v1: {}
-        DELETE:
-          api_method: assets._script_delete
-          valid_schema:
-            v1: {}
-    sites:
-      authorized: true
-      http_request_methods:
-        GET:
-          api_method: assets._sites
-          valid_schema:
-            v1: {}
-        POST:
-          api_method: assets._site_create
-          valid_schema:
-            v1: {}
-        PUT:
-          api_method: assets._site_modify
-          valid_schema:
-            v1: {}
-        PATCH:
-          api_method: assets._activate_site
-          valid_schema:
-            v1: {}
-        DELETE:
-          api_method: assets._site_delete
-          valid_schema:
-            v1: {}
-    ssh_keys:
-      authorized: true
-      http_request_methods:
-        GET:
-          api_method: network._ssh_keys
-          valid_schema:
-            v1: {}
-    test_connection:
-      authorized: true
-      http_request_methods:
-        GET:
-          api_method: remote._test_connection
-          valid_schema:
-            v1: {}
-    deploy:
-      authorized: true
-      http_request_methods:
-        GET:
-          api_method: remote._deploy
-          valid_schema:
-            v1: {}
-    validate_domain:
-      authorized: true
-      http_request_methods:
-        GET:
-          api_method: remote._validate_domain
-          valid_schema:
-            v1: {}
-    get_enums:
-      authorized: true
-      http_request_methods:
-        GET:
-          api_method: common._get_enums
-          valid_schema:
-            v1: {}
-    monitor_server:
-      authorized: true
-      http_request_methods:
-        GET:
-          api_method: remote._monitor_server
-          valid_schema:
-            v1: {}
-    monitoring:
-      authorized: true
-      http_request_methods:
-        GET:
-          api_method: remote._monitoring
-          valid_schema:
-            v1: {}
-    install_monitoring_service:
-      authorized: true
-      http_request_methods:
-        PUT:
-          api_method: remote._install_monitoring_service
-          valid_schema:
-            v1: {}
-    detect_root:
-      authorized: true
-      http_request_methods:
-        PUT:
-          api_method: remote._detect_root
-          valid_schema:
-            v1: {}
   cli:
-    about:
+    help:
+      api_method: common._help
+      valid_schema:
+        v1: {}
+    system/about:
       api_method: common._about
       valid_schema:
         v1: {}
-    system:
+    system/system:
       api_method: system._system
       valid_schema:
         v1: {}
-    network:
+    system/network:
       api_method: system._network
       valid_schema:
         v1: {}
-    cpu:
+    system/cpu:
       api_method: system._cpu
       valid_schema:
         v1: {}
-    memory:
+    system/memory:
       api_method: system._memory
       valid_schema:
         v1: {}
-    disk:
+    system/disk:
       api_method: system._disk
       valid_schema:
         v1: {}
-    is_email:
+    validation/email:
       api_method: common._is_email
       valid_schema:
         v1:
           arguments:
             email: true
-    countries:
+    validation/ip:
+      api_method: common._is_ip
+      valid_schema:
+        v1:
+          arguments:
+            ip: true
+    validation/domain:
+      api_method: network._validate_domain
+      valid_schema:
+        v1:
+          arguments:
+            domain: true
+    common/countries:
       api_method: common._countries
       valid_schema:
         v1: {}
-    ip:
+    network/ip:
       api_method: network._ip
       valid_schema:
         v1: {}
-    test:
+    common/test:
       api_method: common._test
       valid_schema:
         v1: {}
-    scan_ip:
+    network/scan_ip:
       api_method: network._scan_ip
       valid_schema:
         v1:
           arguments:
             ip: true
             ports: false
-    scan:
-      api_method: network._scan
+            ttl: false
+    network/scan_all_interfaces:
+      api_method: network._scan_all_interfaces
       valid_schema:
-        v1: {}
-    db_check:
+        v1: 
+          arguments:
+            ports: false
+            ttl: false
+    db/db_check:
       api_method: db._db_check
       valid_schema:
         v1: {}
-    users:
+    recovery/soft:
+      api_method: auth._soft_recovery
+      valid_schema:
+        v1:
+          arguments:
+            username: true
+    recovery/full:
+      api_method: auth._full_recovery
+      valid_schema:
+        v1:
+          arguments:
+            username: true
+    user/activate:
+      api_method: auth._user_activate
+      valid_schema:
+        v1:
+          arguments:
+            ulc: true
+            pin: true
+    user/create:
+      api_method: users._user_create
+      valid_schema:
+        v1:
+          arguments:
+            username: true
+            email: true
+            firstname: false
+            lastname: false
+            role: true
+    user/get_system_user:
+      api_method: users._get_system_user
+      valid_schema:
+        v1: {}
+    browse/users:
       api_method: users._users
       valid_schema:
         v1:
           arguments:
             filter: false
             sort: false
-    devices:
+    browse/devices:
       api_method: assets._devices
       valid_schema:
         v1:
@@ -382,23 +125,7 @@ api:
             filter: false
             sort: false
             exclude: false
-    soft_recovery:
-      api_method: auth._soft_recovery
-      valid_schema:
-        v1:
-          arguments:
-            username: true
-    full_recovery:
-      api_method: auth._full_recovery
-      valid_schema:
-        v1:
-          arguments:
-            username: true
-    get_system_user:
-      api_method: users._get_system_user
-      valid_schema:
-        v1: {}
-    servers:
+    browse/servers:
       api_method: assets._servers
       valid_schema:
         v1:
@@ -406,7 +133,7 @@ api:
             filter: false
             sort: false
             exclude: false
-    scripts:
+    browse/scripts:
       api_method: assets._scripts
       valid_schema:
         v1:
@@ -414,7 +141,7 @@ api:
             filter: false
             sort: false
             exclude: false
-    sites:
+    browse/sites:
       api_method: assets._sites
       valid_schema:
         v1:
@@ -422,41 +149,49 @@ api:
             filter: false
             sort: false
             exclude: false
-    domain_info:
+    browse/items:
+      api_method: assets._items
+      valid_schema:
+        v1:
+          arguments:
+            filter: false
+            sort: false
+            exclude: false
+    network/domain_info:
       api_method: network._domain_info
       valid_schema:
         v1: {}
-    ssh_keys:
+    network/ssh_keys:
       api_method: network._ssh_keys
       valid_schema:
         v1: {}
-    test_connection:
+    network/test_connection:
       api_method: remote._test_connection
       valid_schema:
         v1: {}
-    validate_domain:
+    network/validate_domain:
       api_method: network._validate_domain
       valid_schema:
         v1: {}
-    get_enums:
+    common/get_enums:
       api_method: common._get_enums
       valid_schema:
         v1: {}
-    monitor_server:
+    remote/monitor_server:
       api_method: remote._monitor_server
       valid_schema:
         v1:
           arguments:
             id: true
-    monitoring:
+    remote/monitoring:
       api_method: remote._monitoring
       valid_schema:
         v1: {}
-    monitor_servers:
+    remote/monitor_servers:
       api_method: remote._monitor_servers
       valid_schema:
         v1: {}
-    install_monitoring_service:
+    remote/install_monitoring_service:
       api_method: remote._install_monitoring_service
       valid_schema:
         v1:

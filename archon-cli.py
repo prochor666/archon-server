@@ -126,7 +126,7 @@ def cli_app():
                 status = False
                 data_mode = f"{endpoint} "
                 data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'magenta')}"
-                method_response = utils.format_response(status, json.parse({'error': e}))
+                method_response = utils.format_response(status, json.dumps({'error': str(e)}))
 
                 output_buffer.append('')
                 output_buffer.append(intro + data_status_and_mode)

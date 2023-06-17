@@ -136,7 +136,8 @@ def insert(item_data: dict):
 
             # Notification comes here
             html_message_data = {
-                'app_full_name': app.config['name'],
+                'app_full_name': app.config['full_name'],
+                'app_name': app.config['name'],
                 'username': app.config['user']['username'],
                 'message': f"Item {item['name']} was created."
             }

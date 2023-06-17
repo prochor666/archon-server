@@ -58,6 +58,7 @@ then
     pip install fastapi
     pip install mysql-connector-python
     pip install colorama
+    pip install jinja2
 
     if [[ ! -d $SITESDIR ]];
     then
