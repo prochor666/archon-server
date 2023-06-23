@@ -99,6 +99,7 @@ async def respond(
     domain: str = None,
     ip: str = None,
     ports: str = None,
+    dns_records: str = None,
     ttl: str = None) -> dict:
 
     set_client_ip(request)
@@ -108,7 +109,7 @@ async def respond(
         case 'client_ip':
             return network._client_ip()
         case 'domain_info':
-            return network._domain_info(domain)
+            return network._domain_info(domain, dns_records)
         case 'scan_ip':
             return network._scan_ip(ip, ports,ttl)
         case 'ip':

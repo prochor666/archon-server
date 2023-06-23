@@ -21,6 +21,7 @@ def _users(data_pass: dict = {}) -> dict:
         result['message'] = f"Found some users ({result['count']})"
     return result
 
+
 def _load_one(id: str) -> dict:
     r = users.load_one(filter_data = {
         'id': id

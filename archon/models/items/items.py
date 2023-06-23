@@ -64,7 +64,7 @@ def modify(item_data: dict):
             item.update(modify_item)
             item.update(item_data)
 
-            item['updater'] = app.config['user']['_id']
+            item['updater'] = app.store['user']['_id']
             item['updated_at'] = utils.now()
 
             changed = utils.detect_object_changes([
@@ -126,7 +126,7 @@ def insert(item_data: dict):
             item_data.pop('updated_at', None)
 
             item['created_at'] = utils.now()
-            item['creator'] = app.config['user']['_id']
+            item['creator'] = app.store['user']['_id']
 
             if 'target' not in item or type(item['target']) != str:
                 item['target'] = 'site'
@@ -138,7 +138,7 @@ def insert(item_data: dict):
             html_message_data = {
                 'app_full_name': app.config['full_name'],
                 'app_name': app.config['name'],
-                'username': app.config['user']['username'],
+                'username': app.store['user']['username'],
                 'message': f"Item {item['name']} was created."
             }
             notifications.email('settings.notifications.items',

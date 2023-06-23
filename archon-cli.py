@@ -79,7 +79,7 @@ def cli_app():
 
         app.store['user'] = users._get_system_user()
 
-        display_username = f"[{os.getlogin()} /as {app.store['user']['username']}]"
+        display_username = f"[{os.getlogin()} as {app.store['user']['username']}]"
         if type(display_username) is not str:
             display_username = app.store['user']['username']
         # Consider or not to use
@@ -126,7 +126,7 @@ def cli_app():
                 status = False
                 data_mode = f"{endpoint} "
                 data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'magenta')}"
-                method_response = utils.format_response(status, json.dumps({'error': str(e)}))
+                method_response = utils.format_response(status, json.dumps({'error': e}))
 
                 output_buffer.append('')
                 output_buffer.append(intro + data_status_and_mode)

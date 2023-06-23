@@ -14,7 +14,7 @@ def load(filter_data: dict | None = None, sort_data: dict | None = None, exclude
 
 
 def email(case: str, template: str, subject: str, html_message_data: dict, att: str = ''):
-    if app.config['user']['username'] != 'system':
+    if app.store['user']['username'] != 'system':
         valid_users = data.collect(data.ex({
             'collection': 'users',
             'filter': {
@@ -33,7 +33,7 @@ def email(case: str, template: str, subject: str, html_message_data: dict, att: 
 def db(obj_type: str, obj_id: str, message: str, json_data: str):
     notifs = app.db['notifications']
     notification = {
-        'user_id': app.config['user']['_id'],
+        'user_id': app.store['user']['_id'],
         'created_at': utils.now(),
         'obj_type': obj_type,
         'obj_id': obj_id,

@@ -5,7 +5,7 @@ from archon.models.notifications import notifications
 from archon.models.servers import servers
 from archon.models.scripts import scripts
 from archon.models.sites import sites
-from archon.models import items
+from archon.models.items import items
 from archon.network import monitoring
 
 
@@ -18,10 +18,11 @@ def _servers(data_pass: dict = {}) -> dict:
     result = {
         'status': False,
         'message': str(u) if type(u) is str else "No servers",
-        'type': str(type(u)),
+        'type': type(u).__name__,
         'servers': [],
-        'count': 0 if type(u) is str or u == None else len(u)
+        'count': 0 if type(u) is not list or u == None else len(u)
     }
+    
     if result['count'] > 0:
         result['status'] = True
         result['message'] = f"Found servers: {result['count']}"
@@ -76,7 +77,7 @@ def _scripts(data_pass: dict = {}) -> dict:
         'status': False,
         'message': str(u) if type(u) is str else "No scripts",
         'scripts': [],
-        'count': 0 if type(u) is str or u == None else len(u)
+        'count': 0 if type(u) is not list or u == None else len(u)
     }
     if result['count'] > 0:
         result['status'] = True
@@ -132,7 +133,7 @@ def _sites(data_pass: dict = {}) -> dict:
         'status': False,
         'message': str(u) if type(u) is str else "No sites",
         'sites': [],
-        'count': 0 if type(u) is str or u == None else len(u)
+        'count': 0 if type(u) is not list or u == None else len(u)
     }
     if result['count'] > 0:
         result['status'] = True
@@ -195,11 +196,13 @@ def _items(data_pass: dict = {}) -> dict:
     u = items.load(
         data_filter['filter'], data_filter['sort'], data_filter['exclude'])
 
+    print(data.collect(u), type(u).__name__)
+
     result = {
         'status': False,
         'message': str(u) if type(u) is str else "No items",
         'items': [],
-        'count': 0 if type(u) is str or u == None else len(u)
+        'count': 0 if type(u) is not list or u == None else len(u)
     }
     if result['count'] > 0:
         result['status'] = True
@@ -230,8 +233,16 @@ def _item_one(id: str) -> dict:
     return result
 
 
-def _item_create(data_pass: dict = {}) -> dict:
-    result = items.insert(data_pass)
+def _item_create(name: str = '', description: str = '', content: str = '', ref: str = '', meta: str = '', settings: str = '') -> dict:
+    item_data = {
+        'name': name,
+        'description': description,
+        'content': content,
+        'ref': ref,
+        'meta': meta,
+        'settings': settings,
+    }
+    result = items.insert(item_data = item_data)
     return result
 
 
