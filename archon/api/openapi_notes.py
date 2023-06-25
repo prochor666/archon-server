@@ -12,16 +12,13 @@ def read():
 
     ## Users
 
-    You will be able to:
-
-    * **Create users** (_not implemented_).
-    * **Read users** (_not implemented_).
+    You can create and activate user
     """
 
     default  = {
         "title": "Archon server",
         "description": description,
-        "version": "0.1.0",
+        "version": "0.2.0",
         "terms_of_service": "https://github.com/prochor666/archon-server",
         "contact": {
             "name": "Prochor666",

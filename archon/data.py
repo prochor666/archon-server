@@ -5,7 +5,9 @@ import pymongo.collection
 def ex(finder: dict = {}) -> list:
     try:
         _ = proxy(finder)
-        return list(_['data_source'].find(_['filter'], _['exclude']).sort(_['sort'][0], _['sort'][1]))
+        return list(
+            _['data_source'].find(_['filter'], _['exclude']).sort(_['sort'][0], _['sort'][1]).collation({ 'locale': "en", 'caseLevel': True })
+        )
 
     except Exception as e:
         return f"Database server error {str(e)}"

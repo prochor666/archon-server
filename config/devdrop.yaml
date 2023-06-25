@@ -46,35 +46,35 @@ items:
   - name: Item _%randomstr%
     description: Item description
     content: Item content
-    type: RANDOM
+    type: MANUAL
     ref: _%randomstr%
     meta: {}
     settings: {}
   - name: Item _%randomstr%
     description: Item description
     content: Item content
-    type: RANDOM
+    type: MANUAL
     ref: _%randomstr%
     meta: {}
     settings: {}
   - name: Item _%randomstr%
     description: Item description
     content: Item content
-    type: RANDOM
+    type: MANUAL
     ref: _%randomstr%
     meta: {}
     settings: {}
   - name: Item _%randomstr%
     description: Item description
     content: Item content
-    type: RANDOM
+    type: MANUAL
     ref: _%randomstr%
     meta: {}
     settings: {}
   - name: Item _%randomstr%
     description: Item description
     content: Item content
-    type: RANDOM
+    type: MANUAL
     ref: _%randomstr%
     meta: {}
     settings: {}

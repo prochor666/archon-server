@@ -1,63 +1,54 @@
 api:
   cli:
-    help:
-      api_method: common._help
-      valid_schema:
-        v1: {}
-    system/about:
-      api_method: common._about
-      valid_schema:
-        v1: {}
-    system/system:
-      api_method: system._system
-      valid_schema:
-        v1: {}
-    system/network:
-      api_method: system._network
-      valid_schema:
-        v1: {}
-    system/cpu:
-      api_method: system._cpu
-      valid_schema:
-        v1: {}
-    system/memory:
-      api_method: system._memory
-      valid_schema:
-        v1: {}
-    system/disk:
-      api_method: system._disk
-      valid_schema:
-        v1: {}
-    validation/email:
-      api_method: common._is_email
-      valid_schema:
-        v1:
-          arguments:
-            email: true
-    validation/ip:
-      api_method: common._is_ip
-      valid_schema:
-        v1:
-          arguments:
-            ip: true
-    validation/domain:
-      api_method: network._validate_domain
-      valid_schema:
-        v1:
-          arguments:
-            domain: true
     common/countries:
       api_method: common._countries
       valid_schema:
         v1: {}
-    network/ip:
-      api_method: network._ip
+    common/get_enums:
+      api_method: common._get_enums
       valid_schema:
         v1: {}
     common/test:
       api_method: common._test
       valid_schema:
         v1: {}
+    db/db_check:
+      api_method: db._db_check
+      valid_schema:
+        v1: {}
+    help:
+      api_method: common._help
+      valid_schema:
+        v1: {}
+    items/create:
+      api_method: assets._item_create
+      valid_schema:
+        v1:
+          arguments:
+            content: false
+            description: false
+            lref: false
+            meta: false
+            name: true
+            settings: false
+    network/domain_info:
+      api_method: network._domain_info
+      valid_schema:
+        v1:
+          arguments:
+            dns_records: false
+            domain: true
+    network/ip:
+      api_method: network._ip
+      valid_schema:
+        v1: {}
+    network/scan_all_interfaces:
+      api_method: network._scan_all_interfaces
+      valid_schema:
+        v1:
+          arguments:
+            ports: false
+            ttl: false
     network/scan_ip:
       api_method: network._scan_ip
       valid_schema:
@@ -66,113 +57,6 @@ api:
             ip: true
             ports: false
             ttl: false
-    network/scan_all_interfaces:
-      api_method: network._scan_all_interfaces
-      valid_schema:
-        v1: 
-          arguments:
-            ports: false
-            ttl: false
-    db/db_check:
-      api_method: db._db_check
-      valid_schema:
-        v1: {}
-    recovery/soft:
-      api_method: auth._soft_recovery
-      valid_schema:
-        v1:
-          arguments:
-            username: true
-    recovery/full:
-      api_method: auth._full_recovery
-      valid_schema:
-        v1:
-          arguments:
-            username: true
-    users/activate:
-      api_method: auth._user_activate
-      valid_schema:
-        v1:
-          arguments:
-            ulc: true
-            pin: true
-    user/get_system_user:
-      api_method: users._get_system_user
-      valid_schema:
-        v1: {}
-    users/create:
-      api_method: users._user_create
-      valid_schema:
-        v1:
-          arguments:
-            username: true
-            email: true
-            firstname: false
-            lastname: false
-            role: true
-    items/create:
-      api_method: assets._item_create
-      valid_schema:
-        v1:
-          arguments:
-            name: true
-            description: false
-            content: false
-            lref: false
-            meta: false
-            settings: false
-    servers/create:
-      api_method: assets._server_create
-      valid_schema:
-        v1:
-          arguments:
-            name: true
-            ipv4: true
-            ipv6: true
-            os: true
-            provider: false
-            ssh_user: true
-            ssh_pwd: false
-            ssh_port: false
-            ssh_key: false
-            publish: false
-            use: false
-            meta: false
-            settings: false
-            owner: false
-    sites/create:
-      api_method: assets._site_create
-      valid_schema:
-        v1:
-          arguments:
-            name: true
-            description: false
-            server_id: true
-            publish: false
-            home_dir: true
-            domain: true
-            alias_domains: false
-            meta: false
-            settings: false
-    scripts/create:
-      api_method: assets._script_create
-      valid_schema:
-        v1:
-          arguments:
-            name: true
-            description: false
-            safe: false
-            target: false
-            content: false
-            meta: false
-            settings: false
-    network/domain_info:
-      api_method: network._domain_info
-      valid_schema:
-        v1:
-          arguments: 
-            domain: true
-            dns_records: false
     network/ssh_keys:
       api_method: network._ssh_keys
       valid_schema:
@@ -185,27 +69,143 @@ api:
       api_method: network._validate_domain
       valid_schema:
         v1: {}
-    common/get_enums:
-      api_method: common._get_enums
-      valid_schema:
-        v1: {}
-    remote/monitor_server:
-      api_method: remote._monitor_server
+    recovery/full:
+      api_method: auth._full_recovery
       valid_schema:
         v1:
           arguments:
-            id: true
-    remote/monitoring:
-      api_method: remote._monitoring
+            username: true
+    recovery/soft:
+      api_method: auth._soft_recovery
       valid_schema:
-        v1: {}
-    remote/monitor_servers:
-      api_method: remote._monitor_servers
-      valid_schema:
-        v1: {}
+        v1:
+          arguments:
+            username: true
     remote/install_monitoring_service:
       api_method: remote._install_monitoring_service
       valid_schema:
         v1:
           arguments:
             id: true
+    remote/monitor_server:
+      api_method: remote._monitor_server
+      valid_schema:
+        v1:
+          arguments:
+            id: true
+    remote/monitor_servers:
+      api_method: remote._monitor_servers
+      valid_schema:
+        v1: {}
+    remote/monitoring:
+      api_method: remote._monitoring
+      valid_schema:
+        v1: {}
+    scripts/create:
+      api_method: assets._script_create
+      valid_schema:
+        v1:
+          arguments:
+            content: false
+            description: false
+            meta: false
+            name: true
+            safe: false
+            settings: false
+            target: false
+    servers/create:
+      api_method: assets._server_create
+      valid_schema:
+        v1:
+          arguments:
+            ipv4: true
+            ipv6: true
+            meta: false
+            name: true
+            os: true
+            owner: false
+            provider: false
+            publish: false
+            settings: false
+            ssh_key: false
+            ssh_port: false
+            ssh_pwd: false
+            ssh_user: true
+            use: false
+    sites/create:
+      api_method: assets._site_create
+      valid_schema:
+        v1:
+          arguments:
+            alias_domains: false
+            description: false
+            domain: true
+            home_dir: true
+            meta: false
+            name: true
+            publish: false
+            server_id: true
+            settings: false
+    system/about:
+      api_method: common._about
+      valid_schema:
+        v1: {}
+    system/cpu:
+      api_method: system._cpu
+      valid_schema:
+        v1: {}
+    system/disk:
+      api_method: system._disk
+      valid_schema:
+        v1: {}
+    system/memory:
+      api_method: system._memory
+      valid_schema:
+        v1: {}
+    system/network:
+      api_method: system._network
+      valid_schema:
+        v1: {}
+    system/system:
+      api_method: system._system
+      valid_schema:
+        v1: {}
+    user/get_system_user:
+      api_method: users._get_system_user
+      valid_schema:
+        v1: {}
+    users/activate:
+      api_method: auth._user_activate
+      valid_schema:
+        v1:
+          arguments:
+            pin: true
+            ulc: true
+    users/create:
+      api_method: users._user_create
+      valid_schema:
+        v1:
+          arguments:
+            email: true
+            firstname: false
+            lastname: false
+            role: true
+            username: true
+    validation/domain:
+      api_method: network._validate_domain
+      valid_schema:
+        v1:
+          arguments:
+            domain: true
+    validation/email:
+      api_method: common._is_email
+      valid_schema:
+        v1:
+          arguments:
+            email: true
+    validation/ip:
+      api_method: common._is_ip
+      valid_schema:
+        v1:
+          arguments:
+            ip: true
