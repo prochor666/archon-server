@@ -6,6 +6,7 @@ from archon.auth import auth as authorization
 
 from fastapi import FastAPI, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 
 from archon.api import openapi_notes
 
@@ -309,7 +310,7 @@ async def respond(
 
 
 # Web routing
-@webapp.get("/{page}/{post}?", status_code=status.HTTP_200_OK)
+@webapp.get("/{page}/", status_code=status.HTTP_200_OK)
 async def respond(
     page: str,
     response: Response, 
@@ -317,19 +318,17 @@ async def respond(
 
     set_client_ip(request)
     page = str(page).replace('/', '')
-    _id = str(id).replace('/', '')
 
-    match endpoint:
-        case 'users':
-            return users._user_delete(_id)
-        case 'servers':
-            return assets._server_delete(_id)
-        case 'scripts':
-            return assets._script_delete(_id)
-        case 'sites':
-            return assets._site_delete(_id)
-        case 'items':
-            return assets._item_delete(_id)
+    match page:
+        case 'templates':
+            return HTMLResponse(content=f"""<html>
+        <head>
+            <title>Some HTML in here</title>
+        </head>
+        <body>
+            <h1>Hey! Page {page} is here.</h1>
+        </body>
+    </html>""", status_code=status.HTTP_200_OK)
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
-            return bad_status(f"Endpoint {endpoint} not enabled")
+            return bad_status(f"Page {page} not enabled")
