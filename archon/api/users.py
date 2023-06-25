@@ -1,8 +1,14 @@
 from archon import app, data, utils
 from archon.models.users import users 
-
+import json
 
 def _users(data_pass: dict = {}) -> dict:
+    _filter = utils.ark('filter', data_pass)
+    _sort = utils.ark('sort', data_pass)
+    data_pass = {
+        'filter': json.loads(_filter) if len(_filter) > 0 else {},
+        'sort': json.loads(_sort) if len(_sort) > 0 else {}
+    }
     data_filter = utils.apply_filter(data_pass)
     u = users.load(data_filter['filter'], data_filter['sort']) 
 
@@ -11,14 +17,14 @@ def _users(data_pass: dict = {}) -> dict:
         'message': str(u) if type(u) is str else "No users",
         'type': type(u).__name__,
         'users': [],
+        'data_filter': data_filter,
         'count': 0 if type(u) is not list or u == None else len(u)
     }
 
     if result['count'] > 0:
         result['status'] = True
         result['users'] = data.collect(u)
-
-        result['message'] = f"Found some users ({result['count']})"
+        result['message'] = f"Found users ({result['count']})"
     return result
 
 
@@ -42,19 +48,13 @@ def _load_one(id: str) -> dict:
         result['message'] = f"Found user"
     return result
 
+
 def _get_system_user(data_pass: dict = {}) -> dict:
     return users.system_user()
 
 
-def _user_create(username: str = '', email: str = '', role: str = '', firstname: str = '', lastname: str = '', ) -> dict:
-    user_data = {
-        'username': username,
-        'email': email,
-        'role': role,
-        'firstname': firstname,
-        'lastname': lastname,
-    }
-    result = users.insert(user_data = user_data)
+def _user_create(data_pass: dict = {}) -> dict:
+    result = users.insert(data_pass)
     return result
 
 

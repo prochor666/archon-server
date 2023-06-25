@@ -320,7 +320,7 @@ def site_model(site_data: dict) -> dict:
         'name': utils.eval_key('name', site_data),
         'description': utils.eval_key('description', site_data),
         'server_id': utils.eval_key('server_id', site_data),
-        'script_id': utils.eval_key('script_id', site_data),
+        'scripts': utils.eval_key('scripts', site_data),
         'publish': utils.eval_key('publish', site_data, 'bool'),
         'home_dir': utils.eval_key('home_dir', site_data),
         'domain': utils.eval_key('domain', site_data),

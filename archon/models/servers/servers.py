@@ -4,7 +4,7 @@ from archon import app, data, utils
 from archon.models.notifications import notifications
 
 
-def load(filter_data: dict | None = None, sort_data: dict | None = None, exclude_data: dict | None = None) -> list:
+def load(filter_data: dict | None = None, sort_data: list | None = None, exclude_data: dict | None = None) -> list:
     finder = {
         'collection': 'servers',
         'filter': filter_data,

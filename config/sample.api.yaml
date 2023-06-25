@@ -89,14 +89,18 @@ api:
         v1:
           arguments:
             username: true
-    user/activate:
+    users/activate:
       api_method: auth._user_activate
       valid_schema:
         v1:
           arguments:
             ulc: true
             pin: true
-    user/create:
+    user/get_system_user:
+      api_method: users._get_system_user
+      valid_schema:
+        v1: {}
+    users/create:
       api_method: users._user_create
       valid_schema:
         v1:
@@ -106,61 +110,69 @@ api:
             firstname: false
             lastname: false
             role: true
-    user/get_system_user:
-      api_method: users._get_system_user
-      valid_schema:
-        v1: {}
-    browse/users:
-      api_method: users._users
+    items/create:
+      api_method: assets._item_create
       valid_schema:
         v1:
           arguments:
-            filter: false
-            sort: false
-    browse/devices:
-      api_method: assets._devices
+            name: true
+            description: false
+            content: false
+            lref: false
+            meta: false
+            settings: false
+    servers/create:
+      api_method: assets._server_create
       valid_schema:
         v1:
           arguments:
-            filter: false
-            sort: false
-            exclude: false
-    browse/servers:
-      api_method: assets._servers
+            name: true
+            ipv4: true
+            ipv6: true
+            os: true
+            provider: false
+            ssh_user: true
+            ssh_pwd: false
+            ssh_port: false
+            ssh_key: false
+            publish: false
+            use: false
+            meta: false
+            settings: false
+            owner: false
+    sites/create:
+      api_method: assets._site_create
       valid_schema:
         v1:
           arguments:
-            filter: false
-            sort: false
-            exclude: false
-    browse/scripts:
-      api_method: assets._scripts
+            name: true
+            description: false
+            server_id: true
+            publish: false
+            home_dir: true
+            domain: true
+            alias_domains: false
+            meta: false
+            settings: false
+    scripts/create:
+      api_method: assets._script_create
       valid_schema:
         v1:
           arguments:
-            filter: false
-            sort: false
-            exclude: false
-    browse/sites:
-      api_method: assets._sites
-      valid_schema:
-        v1:
-          arguments:
-            filter: false
-            sort: false
-            exclude: false
-    browse/items:
-      api_method: assets._items
-      valid_schema:
-        v1:
-          arguments:
-            filter: false
-            sort: false
-            exclude: false
+            name: true
+            description: false
+            safe: false
+            target: false
+            content: false
+            meta: false
+            settings: false
     network/domain_info:
       api_method: network._domain_info
       valid_schema:
-        v1: {}
+        v1:
+          arguments: 
+            domain: true
+            dns_records: false
     network/ssh_keys:
       api_method: network._ssh_keys
       valid_schema:

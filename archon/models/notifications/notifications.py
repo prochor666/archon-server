@@ -3,7 +3,7 @@ from archon import app
 from archon.mailer import mailer
 
 
-def load(filter_data: dict | None = None, sort_data: dict | None = None, exclude_data: dict | None = None) -> list:
+def load(filter_data: dict | None = None, sort_data: list | None = None, exclude_data: dict | None = None) -> list:
     finder = {
         'collection': 'notifications',
         'filter': filter_data,

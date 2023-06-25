@@ -5,7 +5,7 @@ import pymongo.collection
 def ex(finder: dict = {}) -> list:
     try:
         _ = proxy(finder)
-        return _['data_source'].find(_['filter'], _['exclude']).sort(_['sort'][0], _['sort'][1])
+        return list(_['data_source'].find(_['filter'], _['exclude']).sort(_['sort'][0], _['sort'][1]))
 
     except Exception as e:
         return f"Database server error {str(e)}"
@@ -49,7 +49,7 @@ def proxy(finder: dict) -> dict:
     
     if type(_collection) is str:
         data_source = app.db[_collection]
-        
+
         if type(data_source) is pymongo.collection.Collection:
             _from_str = {
                 'asc': 1,

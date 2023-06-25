@@ -4,14 +4,13 @@ from archon.auth import secret
 from archon.mailer import mailer
 
 
-def load(filter_data: dict, sort_data: dict | None = None) -> list:
+def load(filter_data: dict, sort_data: list | None = None) -> list:
     finder = {
         'collection': 'users',
         'filter': filter_data,
         'sort': sort_data,
         'exclude': filter_user_pattern()
     }
-    
     r = data.ex(finder)
     if type(r).__name__ == 'Cursor':  
         return list(r)

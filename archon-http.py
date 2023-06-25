@@ -1,4 +1,5 @@
 from archon import app, compat, utils
+import json
 #from archon.api.auth import auth as login
 from archon.api import assets, auth, common, db, network, remote, system, users 
 from archon.auth import auth as authorization
@@ -6,10 +7,14 @@ from archon.auth import auth as authorization
 from fastapi import FastAPI, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 
+from archon.api import openapi_notes
+
 compat.check_version()
 app.mode = 'http'
 
-webapp = FastAPI()
+openapi_notes
+
+webapp = FastAPI(**openapi_notes.read())
 
 webapp.add_middleware(
     CORSMiddleware,
@@ -45,7 +50,7 @@ def bad_status(message = ''):
 
 
 # Common info
-@webapp.get("/api/v1/common/{endpoint}", status_code=status.HTTP_200_OK)
+@webapp.get("/api/v1/common/{endpoint}", tags=['Common'], status_code=status.HTTP_200_OK)
 async def respond(
     endpoint: str,
     response: Response, 
@@ -66,7 +71,7 @@ async def respond(
 
 
 # System HW/SW
-@webapp.get("/api/v1/system/{endpoint}", status_code=status.HTTP_200_OK)
+@webapp.get("/api/v1/system/{endpoint}", tags=['System'], status_code=status.HTTP_200_OK)
 async def respond(
     endpoint: str,
     response: Response, 
@@ -96,11 +101,7 @@ async def respond(
     endpoint: str,
     response: Response, 
     request: Request,
-    domain: str = None,
-    ip: str = None,
-    ports: str = None,
-    dns_records: str = None,
-    ttl: str = None) -> dict:
+    data: dict = {}) -> dict:
 
     set_client_ip(request)
     endpoint = str(endpoint).replace('/', '')
@@ -109,13 +110,13 @@ async def respond(
         case 'client_ip':
             return network._client_ip()
         case 'domain_info':
-            return network._domain_info(domain, dns_records)
+            return network._domain_info(data)
         case 'scan_ip':
-            return network._scan_ip(ip, ports,ttl)
+            return network._scan_ip(data)
         case 'ip':
             return network._ip()
         case 'scan_all_interfaces':
-            return network._scan_all_interfaces(ports, ttl)
+            return network._scan_all_interfaces(data)
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return bad_status(f"Endpoint {endpoint} not enabled")
@@ -127,20 +128,18 @@ async def respond(
     endpoint: str,
     response: Response, 
     request: Request, 
-    ip: str = None,
-    email: str = None,
-    domain: str = None) -> dict:
+    data: dict = {}) -> dict:
     
     set_client_ip(request)
     endpoint = str(endpoint).replace('/', '')
 
     match endpoint:
         case 'email':
-            return common._is_email(email)
+            return common._is_email(data)
         case 'ip':
-            return common._is_ip(ip)
+            return common._is_ip(data)
         case 'domain':
-            return network._validate_domain(domain)
+            return network._validate_domain(data)
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return bad_status(f"Endpoint {endpoint} not enabled")
@@ -151,44 +150,29 @@ async def respond(
     endpoint: str,
     response: Response, 
     request: Request, 
-    item_type: str = '', 
-    filter: str = '', 
-    sort: str = '') -> dict:
+    _filter: str = '',
+    _sort: str = '') -> dict:
 
     set_client_ip(request)
 
+    data = {
+        'filter': _filter,
+        'sort': _sort
+    }
+    
     match endpoint:
         case 'users':
-            return users._users({
-                'filter': filter,
-                'sort': sort,
-            })
+            return users._users(data)
         case 'servers':
-            return assets._servers({
-                'filter': filter,
-                'sort': sort,
-            })
+            return assets._servers(data)
         case 'scripts':
-            return assets._scripts({
-                'filter': filter,
-                'sort': sort,
-            })
+            return assets._scripts(data)
         case 'sites':
-            return assets._sites({
-                'filter': filter,
-                'sort': sort,
-            })
+            return assets._sites(data)
         case 'notifications':
-            return assets._notifications({
-                'filter': filter,
-                'sort': sort,
-            })
+            return assets._notifications(data)
         case 'items':
-            return assets._items({
-                'item_type': item_type,
-                'filter': filter,
-                'sort': sort,
-            })
+            return assets._items(data)
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return bad_status(f"Endpoint {endpoint} not enabled")
@@ -286,25 +270,49 @@ async def respond(
     response: Response, 
     request: Request, 
     id: str) -> dict:
-    
+
     set_client_ip(request)
     endpoint = str(endpoint).replace('/', '')
     _id = str(id).replace('/', '')
-    data = {
-        'id': _id
-    }
 
     match endpoint:
         case 'users':
-            return users._user_delete(data)
+            return users._user_delete(_id)
         case 'servers':
-            return assets._server_delete(data)
+            return assets._server_delete(_id)
         case 'scripts':
-            return assets._script_delete(data)
+            return assets._script_delete(_id)
         case 'sites':
-            return assets._site_delete(data)
+            return assets._site_delete(_id)
         case 'items':
-            return assets._item_delete(data)
+            return assets._item_delete(_id)
+        case _:
+            response.status_code = status.HTTP_400_BAD_REQUEST
+            return bad_status(f"Endpoint {endpoint} not enabled")
+
+
+# Web routing
+@webapp.get("/{page}/{post}?", status_code=status.HTTP_200_OK)
+async def respond(
+    page: str,
+    response: Response, 
+    request: Request, ) -> dict:
+
+    set_client_ip(request)
+    page = str(page).replace('/', '')
+    _id = str(id).replace('/', '')
+
+    match endpoint:
+        case 'users':
+            return users._user_delete(_id)
+        case 'servers':
+            return assets._server_delete(_id)
+        case 'scripts':
+            return assets._script_delete(_id)
+        case 'sites':
+            return assets._site_delete(_id)
+        case 'items':
+            return assets._item_delete(_id)
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return bad_status(f"Endpoint {endpoint} not enabled")

@@ -14,11 +14,13 @@ def _get_enums(data_pass: dict = {}) -> dict:
     return app.config['enum_options']
 
 
-def _is_email(email: str = '') -> dict:
+def _is_email(data_pass: dict = {}) -> dict:
+    email = utils.ark('email', data_pass)
     return mailer.check_email(email)
 
 
-def _is_ip(ip: str) -> dict:
+def _is_ip(data_pass: dict = {}) -> dict:
+    ip = utils.ark('ip', data_pass)
     return utils.ip_valid(ip)
 
 

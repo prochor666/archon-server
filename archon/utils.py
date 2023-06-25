@@ -85,6 +85,10 @@ def format_response(status: bool, text: str) -> str:
     return f"""{colors.fg('Ok', 'LIGHTGREEN_EX')}: {text}""" if status == True else f"""{colors.fg('Error', 'red')}: {text}"""
 
 
+def ark(key: str = '', obj: dict = {}, default: str = ''):
+    return obj[key] if len(key) > 0 and key in obj.keys() and type(default).__name__ == type(obj[key]).__name__ else default
+
+
 def validate_data_pass(d: dict) -> dict:
     result = {}
     for k in d.keys():

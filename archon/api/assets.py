@@ -9,8 +9,77 @@ from archon.models.items import items
 from archon.network import monitoring
 
 
+# Item modifiers and listings
+def _items(data_pass: dict = {}) -> dict:
+    _filter = utils.ark('filter', data_pass)
+    _sort = utils.ark('sort', data_pass)
+    data_pass = {
+        'filter': json.loads(_filter) if len(_filter) > 0 else {},
+        'sort': json.loads(_sort) if len(_sort) > 0 else {}
+    }
+    data_filter = utils.apply_filter(data_pass)
+    u = items.load(
+        data_filter['filter'], data_filter['sort'], data_filter['exclude'])
+
+    result = {
+        'status': False,
+        'message': str(u) if type(u) is str else "No items",
+        'items': [],
+        'data_filter': data_filter,
+        'count': 0 if type(u) is not list or u == None else len(u)
+    }
+    if result['count'] > 0:
+        result['status'] = True
+        result['message'] = f"Found items: {result['count']}"
+        result['items'] = data.collect(u)
+
+    return result
+
+
+def _item_one(id: str) -> dict:
+    r = items.load_one(filter_data = {
+        'id': id
+    })
+
+    result = {
+        'status': False,
+        'message': "No item",
+        'type': type(r).__name__,
+        'item': {},
+    }
+
+    if type(r).__name__ == 'dict':
+        #r['_id'] = str(r['_id'])
+        result['status'] = True
+        result['item'] = data.collect_one(r)
+        result['type'] = type(r).__name__
+        result['message'] = f"Found item"
+    return result
+
+
+def _item_create(data_pass: dict = {}) -> dict:
+    result = items.insert(data_pass)
+    return result
+
+
+def _item_modify(data_pass: dict = {}) -> dict:
+    result = items.modify(data_pass)
+    return result
+
+
+def _item_delete(data_pass: dict = {}) -> dict:
+    result = items.delete(data_pass)
+    return result
+
+
 # Server modifiers and listings
 def _servers(data_pass: dict = {}) -> dict:
+    _filter = utils.ark('filter', data_pass)
+    _sort = utils.ark('sort', data_pass)
+    data_pass = {
+        'filter': json.loads(_filter) if len(_filter) > 0 else {},
+        'sort': json.loads(_sort) if len(_sort) > 0 else {}
+    }
     data_filter = utils.apply_filter(data_pass)
     u = servers.load(
         data_filter['filter'], data_filter['sort'], data_filter['exclude'])
@@ -69,6 +138,12 @@ def _server_delete(data_pass: dict = {}) -> dict:
 
 # Script modifiers and listings
 def _scripts(data_pass: dict = {}) -> dict:
+    _filter = utils.ark('filter', data_pass)
+    _sort = utils.ark('sort', data_pass)
+    data_pass = {
+        'filter': json.loads(_filter) if len(_filter) > 0 else {},
+        'sort': json.loads(_sort) if len(_sort) > 0 else {}
+    }
     data_filter = utils.apply_filter(data_pass)
     u = scripts.load(
         data_filter['filter'], data_filter['sort'], data_filter['exclude'])
@@ -125,6 +200,12 @@ def _script_delete(data_pass: dict = {}) -> dict:
 
 # Site modifiers and listings
 def _sites(data_pass: dict = {}) -> dict:
+    _filter = utils.ark('filter', data_pass)
+    _sort = utils.ark('sort', data_pass)
+    data_pass = {
+        'filter': json.loads(_filter) if len(_filter) > 0 else {},
+        'sort': json.loads(_sort) if len(_sort) > 0 else {}
+    }
     data_filter = utils.apply_filter(data_pass)
     u = sites.load(
         data_filter['filter'], data_filter['sort'], data_filter['exclude'])
@@ -187,72 +268,6 @@ def _site_modify(data_pass: dict = {}) -> dict:
 
 def _site_delete(data_pass: dict = {}) -> dict:
     result = sites.delete(data_pass)
-    return result
-
-
-# Item modifiers and listings
-def _items(data_pass: dict = {}) -> dict:
-    data_filter = utils.apply_filter(data_pass)
-    u = items.load(
-        data_filter['filter'], data_filter['sort'], data_filter['exclude'])
-
-    print(data.collect(u), type(u).__name__)
-
-    result = {
-        'status': False,
-        'message': str(u) if type(u) is str else "No items",
-        'items': [],
-        'count': 0 if type(u) is not list or u == None else len(u)
-    }
-    if result['count'] > 0:
-        result['status'] = True
-        result['message'] = f"Found items: {result['count']}"
-        result['items'] = data.collect(u)
-
-    return result
-
-
-def _item_one(id: str) -> dict:
-    r = items.load_one(filter_data = {
-        'id': id
-    })
-
-    result = {
-        'status': False,
-        'message': "No item",
-        'type': type(r).__name__,
-        'item': {},
-    }
-
-    if type(r).__name__ == 'dict':
-        #r['_id'] = str(r['_id'])
-        result['status'] = True
-        result['item'] = data.collect_one(r)
-        result['type'] = type(r).__name__
-        result['message'] = f"Found item"
-    return result
-
-
-def _item_create(name: str = '', description: str = '', content: str = '', ref: str = '', meta: str = '', settings: str = '') -> dict:
-    item_data = {
-        'name': name,
-        'description': description,
-        'content': content,
-        'ref': ref,
-        'meta': meta,
-        'settings': settings,
-    }
-    result = items.insert(item_data = item_data)
-    return result
-
-
-def _item_modify(data_pass: dict = {}) -> dict:
-    result = items.modify(data_pass)
-    return result
-
-
-def _item_delete(data_pass: dict = {}) -> dict:
-    result = items.delete(data_pass)
     return result
 
 
@@ -328,7 +343,12 @@ def _search(data_pass: dict) -> dict:
 
 # Notifications
 def _notifications(data_pass: dict = {}) -> dict:
-
+    _filter = utils.ark('filter', data_pass)
+    _sort = utils.ark('sort', data_pass)
+    data_pass = {
+        'filter': json.loads(_filter) if len(_filter) > 0 else {},
+        'sort': json.loads(_sort) if len(_sort) > 0 else {}
+    }
     data_filter = utils.apply_filter(data_pass)
     u = notifications.load(data_filter['filter'], data_filter['sort'], data_filter['exclude'])
 
