@@ -6,7 +6,7 @@ Content and device control server
 
 ## ✅ Prerequisities
 
-* Python 3.7.3+ is installed
+* Python 3.10.0+ is installed
 * Python Pip is installed
 * MongoDb is installed
 
@@ -36,12 +36,12 @@ Running the webserver guide.
 ### 💻 Linux & Mac
 
 ```bash
-./app
+./server
 ```
 ### 💻 Windows 
 
 ```powershell
-.\app.cmd
+.\server.cmd
 ```
 
 ---

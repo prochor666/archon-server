@@ -28,9 +28,9 @@ NUM="${CLEAN//./$EMPT}"
 
 echo $NUM
 
-if [[ "$NUM" -lt "373" ]];
+if [[ "$NUM" -lt "3100" ]];
 then
-    echo "Python 3.7.3 or newer is required"
+    echo "Python 3.10.0 or newer is required"
     exit 1
 fi
 

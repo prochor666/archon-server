@@ -14,8 +14,8 @@ FOR /F "tokens=2" %%G IN ('python -V') do (SET version_raw=%%G)
 SET modified=%version_raw:.=%
 SET /A num=%modified%+0
 
-IF %num% LSS 373 (
-    ECHO Python 3.7.3 or newer is required
+IF %num% LSS 3100 (
+    ECHO Python 3.10.0 or newer is required
     EXIT /B 0
 ) ELSE (
     ECHO Python %version_raw% found
