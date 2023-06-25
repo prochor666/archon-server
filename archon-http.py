@@ -101,7 +101,10 @@ async def respond(
     endpoint: str,
     response: Response, 
     request: Request,
-    data: dict = {}) -> dict:
+    domain: str = '',
+    dns_records: str = '',
+    ip: str = '',
+    ports: str = '') -> dict:
 
     set_client_ip(request)
     endpoint = str(endpoint).replace('/', '')
@@ -110,13 +113,19 @@ async def respond(
         case 'client_ip':
             return network._client_ip()
         case 'domain_info':
-            return network._domain_info(data)
+            return network._domain_info({
+                'domain': domain,
+                'dns_records': dns_records
+            })
         case 'scan_ip':
-            return network._scan_ip(data)
+            return network._scan_ip({
+                'ip': ip,
+                'ports': ports
+            })
         case 'ip':
             return network._ip()
         case 'scan_all_interfaces':
-            return network._scan_all_interfaces(data)
+            return network._scan_all_interfaces()
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return bad_status(f"Endpoint {endpoint} not enabled")
@@ -128,18 +137,26 @@ async def respond(
     endpoint: str,
     response: Response, 
     request: Request, 
-    data: dict = {}) -> dict:
+    domain: str = '',
+    email: str = '',
+    ip: str = '') -> dict:
     
     set_client_ip(request)
     endpoint = str(endpoint).replace('/', '')
 
     match endpoint:
         case 'email':
-            return common._is_email(data)
+            return common._is_email({
+                'email': email
+            })
         case 'ip':
-            return common._is_ip(data)
+            return common._is_ip({
+                'ip': ip
+            })
         case 'domain':
-            return network._validate_domain(data)
+            return network._validate_domain({
+                'domain': domain
+            })
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return bad_status(f"Endpoint {endpoint} not enabled")

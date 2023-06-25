@@ -40,8 +40,6 @@ def _domain_info(data_pass: dict = {}) -> dict:
     }
     record_filter = []
 
-    print('data_pass', data_pass, 'dns_records' in data_pass.keys())
-
     if type(dns_records) is list and len(dns_records) > 0: 
         record_filter = dns_records
 

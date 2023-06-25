@@ -24,9 +24,8 @@ def _items(data_pass: dict = {}) -> dict:
     result = {
         'status': False,
         'message': str(u) if type(u) is str else "No items",
+        'count': 0 if type(u) is not list or u == None else len(u),
         'items': [],
-        'data_filter': data_filter,
-        'count': 0 if type(u) is not list or u == None else len(u)
     }
     if result['count'] > 0:
         result['status'] = True
@@ -44,7 +43,6 @@ def _item_one(id: str) -> dict:
     result = {
         'status': False,
         'message': "No item",
-        'type': type(r).__name__,
         'item': {},
     }
 
@@ -52,7 +50,6 @@ def _item_one(id: str) -> dict:
         #r['_id'] = str(r['_id'])
         result['status'] = True
         result['item'] = data.collect_one(r)
-        result['type'] = type(r).__name__
         result['message'] = f"Found item"
     return result
 
@@ -87,9 +84,8 @@ def _servers(data_pass: dict = {}) -> dict:
     result = {
         'status': False,
         'message': str(u) if type(u) is str else "No servers",
-        'type': type(u).__name__,
+        'count': 0 if type(u) is not list or u == None else len(u),
         'servers': [],
-        'count': 0 if type(u) is not list or u == None else len(u)
     }
     
     if result['count'] > 0:
@@ -108,7 +104,6 @@ def _server_one(id: str) -> dict:
     result = {
         'status': False,
         'message': "No server",
-        'type': type(r).__name__,
         'server': {},
     }
 
@@ -116,7 +111,6 @@ def _server_one(id: str) -> dict:
         #r['_id'] = str(r['_id'])
         result['status'] = True
         result['server'] = data.collect_one(r)
-        result['type'] = type(r).__name__
         result['message'] = f"Found server"
     return result
 
@@ -151,8 +145,8 @@ def _scripts(data_pass: dict = {}) -> dict:
     result = {
         'status': False,
         'message': str(u) if type(u) is str else "No scripts",
+        'count': 0 if type(u) is not list or u == None else len(u),
         'scripts': [],
-        'count': 0 if type(u) is not list or u == None else len(u)
     }
     if result['count'] > 0:
         result['status'] = True
@@ -170,7 +164,6 @@ def _script_one(id: str) -> dict:
     result = {
         'status': False,
         'message': "No script",
-        'type': type(r).__name__,
         'script': {},
     }
 
@@ -178,7 +171,6 @@ def _script_one(id: str) -> dict:
         #r['_id'] = str(r['_id'])
         result['status'] = True
         result['script'] = data.collect_one(r)
-        result['type'] = type(r).__name__
         result['message'] = f"Found script"
     return result
 
@@ -213,8 +205,8 @@ def _sites(data_pass: dict = {}) -> dict:
     result = {
         'status': False,
         'message': str(u) if type(u) is str else "No sites",
+        'count': 0 if type(u) is not list or u == None else len(u),
         'sites': [],
-        'count': 0 if type(u) is not list or u == None else len(u)
     }
     if result['count'] > 0:
         result['status'] = True
@@ -243,7 +235,6 @@ def _site_one(id: str) -> dict:
     result = {
         'status': False,
         'message': "No site",
-        'type': type(r).__name__,
         'site': {},
     }
 
@@ -251,7 +242,6 @@ def _site_one(id: str) -> dict:
         #r['_id'] = str(r['_id'])
         result['status'] = True
         result['site'] = data.collect_one(r)
-        result['type'] = type(r).__name__
         result['message'] = f"Found site"
     return result
 
