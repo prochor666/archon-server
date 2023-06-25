@@ -38,9 +38,9 @@ def modify(item_data: dict):
         finder = load_one({
             '$and': [
                 {
-                    '$or': [
+                    '$and': [
                         {'name': item_data['name']},
-                        {'content': item_data['content']}
+                        {'ref': item_data['ref']}
                     ],
                 },
                 {
@@ -97,8 +97,8 @@ def modify(item_data: dict):
             param_found = ''
             if finder['name'] == item_data['name']:
                 param_found = f"with name {item_data['name']}"
-            if len(param_found) == 0 and finder['content'] == item_data['content']:
-                param_found = f"with same content"
+            if len(param_found) == 0 and finder['ref'] == item_data['ref']:
+                param_found = f"with same ref"
 
             result['status'] = False
             result['message'] = f"item {param_found} already exists"
@@ -114,9 +114,9 @@ def insert(item_data: dict):
         item = _model(item_data)
 
         finder = load_one({
-            '$or': [
+            '$and': [
                 {'name': item['name']},
-                {'content': item['content']}
+                {'ref': item['ref']}
             ]
         })
 
@@ -205,7 +205,8 @@ def _model(item_data: dict):
         'name': utils.eval_key('name', item_data),
         'description': utils.eval_key('description', item_data),
         'content': utils.eval_key('content', item_data),
-        'ref': utils.eval_key('ref', item_data, 'dict'),
+        'type': utils.eval_key('type', item_data),
+        'ref': utils.eval_key('ref', item_data),
         'meta': utils.eval_key('meta', item_data, 'dict'),
         'settings': utils.eval_key('settings', item_data, 'dict'),
         'creator': utils.eval_key('creator', item_data),

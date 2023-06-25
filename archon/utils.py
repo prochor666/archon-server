@@ -2,8 +2,9 @@ import os
 import glob
 from datetime import timezone, datetime
 import re
-import json
+import random
 import ipaddress
+import string
 from archon import app, colors
 import dns.resolver
 
@@ -339,10 +340,6 @@ def index_eval() -> dict:
     }
 
 
-def arg_json(arg: str) -> dict:
-    return json.loads(arg.replace('"', '').replace('\'', '"'))
-
-
 def br2nl(s: str) -> str:
     return re.sub('<br\\s*?>', "\n", str(s))
 
@@ -355,13 +352,17 @@ def dos2unix(s: str) -> str:
     return str(s).replace('\r\n', '\n')
 
 
+def rnd(length: int = 7):
+    base = string.digits +  string.ascii_letters
+    rstr =  ''.join(random.choice(base) for i in range(length))
+    return rstr
+
+
 def tag_parse(tag: str, raw: str) -> str:
     result = re.findall(
         f"<{tag}>(.*?)</{tag}>", raw, re.DOTALL)
-
     if len(result) > 0:
         return result[0]
-
     return ''
 
 

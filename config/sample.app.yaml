@@ -27,6 +27,8 @@ dns_resolver:
     - 8.8.8.8
 scan_ip:
   ttl: 0.37
+devdrop: 
+  file: config/devdrop.yaml
 enum_options:
   script_targets:
     - target: site

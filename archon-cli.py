@@ -96,7 +96,7 @@ def cli_app():
 
             try: 
                 obj = globals()
-                result = getattr(obj[module], method)(function_args)
+                result = getattr(obj[module], method)(function_args) if len(function_args.keys()) > 0 else getattr(obj[module], method)()
                 data_mode = f"{endpoint} result is: {type(result).__name__}  "
                 data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'magenta')}"
                 status = True

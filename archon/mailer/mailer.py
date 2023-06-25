@@ -22,13 +22,13 @@ def send(to: str, subject: str, body: str, att: str = '') -> bool | str:
             'alt_body': utils.br2nl(utils.strip_tags(subject, '<br>')),
             'body': body
         }, att))
-
+    
     return False
 
 
 def via(conf: dict, msg: MIMEMultipart) -> bool | str:
 
-    if conf['cs'] in ['TLS', 'SSL']:
+    if conf['cs'] in ['TLS', 'SSL'] and conf['use'] == True:
         context = ssl.create_default_context()
 
         if conf['cs'] == 'SSL':
@@ -59,6 +59,14 @@ def via(conf: dict, msg: MIMEMultipart) -> bool | str:
 
             finally:
                 server.quit() # type: ignore
+
+    else: 
+        try:
+            with smtplib.SMTP('localhost') as server:
+                server.sendmail(msg['From'], msg['To'], msg.as_string())        
+                return True
+        except Exception as e:
+            return 'SMTP-localhost-error: ' + str(e)
 
     return False
 

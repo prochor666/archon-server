@@ -1,3 +1,4 @@
+provider: smtp_provider
 use: false
 host: smtp.server.host
 port: 587

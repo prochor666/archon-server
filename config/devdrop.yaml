@@ -1,0 +1,80 @@
+---
+users: 
+  - username: system
+    email: noreply@local.domain
+    firstname: System
+    lastname: Admin
+    role: admin
+    meta: {}
+    settings: {}
+  - username: prochor
+    email: prochor666@gmail.com
+    firstname: Jan  
+    lastname: Prochodej
+    role: admin
+    meta: {}
+    settings: {}
+  - username: editor
+    email: archoneditor@cybernautica.net
+    firstname: Content
+    lastname: Editor
+    role: editor
+    meta: {}
+    settings: {}
+  - username: user
+    email: archonuser@cybernautica.net
+    firstname: Regular
+    lastname: User
+    role: user
+    meta: {}
+    settings: {}
+  - username: looser
+    email: archonlooser@cybernautica.net
+    firstname: Degraded
+    lastname: Looser
+    role: block
+    meta: {}
+    settings: {}
+  - username: garbage
+    email: archongarbage@cybernautica.net
+    firstname: Some
+    lastname: Garbage
+    role: user
+    meta: {}
+    settings: {}
+items:
+  - name: Item _%randomstr%
+    description: Item description
+    content: Item content
+    type: RANDOM
+    ref: _%randomstr%
+    meta: {}
+    settings: {}
+  - name: Item _%randomstr%
+    description: Item description
+    content: Item content
+    type: RANDOM
+    ref: _%randomstr%
+    meta: {}
+    settings: {}
+  - name: Item _%randomstr%
+    description: Item description
+    content: Item content
+    type: RANDOM
+    ref: _%randomstr%
+    meta: {}
+    settings: {}
+  - name: Item _%randomstr%
+    description: Item description
+    content: Item content
+    type: RANDOM
+    ref: _%randomstr%
+    meta: {}
+    settings: {}
+  - name: Item _%randomstr%
+    description: Item description
+    content: Item content
+    type: RANDOM
+    ref: _%randomstr%
+    meta: {}
+    settings: {}

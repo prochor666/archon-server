@@ -10,7 +10,7 @@ def app_config():
     app_dirs = locate_dirs()
     with open(app_dirs['config']+'/app.yaml') as config:
         data = yaml.load(config, Loader=yaml.Loader)
-        data['config'] = app_dirs
+        data['app_dirs'] = app_dirs
 
         for key, value in data['filesystem'].items():
             data['filesystem'][key] = value.replace('/', os.path.sep)

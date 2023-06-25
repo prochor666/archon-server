@@ -40,7 +40,7 @@ def _countries() -> dict:
     return result
 
 
-def _help():
+def _help(data_pass: dict = {}):
     result = f"""{colors.fg('Archon help', 'LIGHTGREEN_EX')}
 {colors.fg('Linux/Mac', 'LIGHTGREEN_EX')}: ./arc command -argument <value>
 {colors.fg('Windows', 'LIGHTGREEN_EX')}: arc.cmd command -argument <value>
