@@ -65,10 +65,6 @@ api:
       api_method: remote._test_connection
       valid_schema:
         v1: {}
-    network/validate_domain:
-      api_method: network._validate_domain
-      valid_schema:
-        v1: {}
     recovery/full:
       api_method: auth._full_recovery
       valid_schema:
