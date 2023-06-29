@@ -109,7 +109,8 @@ def _scan_ip(data_pass: dict = {}) -> dict:
         'status': False,
         'message': 'Data error',
         'ip': ip,
-        'ports': ports
+        'ports': ports,
+        'ttlin': type(ttl).__name__,
     }
 
     if type(ttl) is not float:

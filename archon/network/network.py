@@ -6,7 +6,6 @@ from archon.system import device
 
 
 def device_ip() -> list:
-
     netifs = device.network_info()
     ips = []
     for netif in netifs:
@@ -27,8 +26,11 @@ def scan_all_interfaces(ports: list = [20, 21, 22, 23, 8080, 80, 443, 3389], ttl
     if type(ips) is list:
         for ip in ips:
             result.append(scan_ip(ip, ports, ttl))
-
     return result
+
+
+def resolve_socket(ip_version: int = 4):
+    return socket.socket(socket.AF_INET6, socket.SOCK_STREAM) if ip_version == 6 else socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 
 def scan_ip(ip: str, ports: list = [21, 22, 23, 80, 443, 3306], ttl: float = None) -> dict:
@@ -56,12 +58,7 @@ def scan_ip(ip: str, ports: list = [21, 22, 23, 80, 443, 3306], ttl: float = Non
 
             try:
                 port = int(port)
-                if ip_version == 4:
-                    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-                else:
-                    sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
-
+                sock = resolve_socket(ip_version)
                 sock.settimeout(ttl)
                 scan_result = sock.connect_ex((ip_target, port))
 

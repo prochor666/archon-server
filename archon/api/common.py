@@ -61,9 +61,9 @@ Commands
 
             for key in args.keys():
                 if args[key] == True:
-                    required.append(f" -{colors.fg(key, 'lightred_ex')} <value>")
+                    required.append(f""" -{colors.fg(key, 'lightred_ex')} <value>""")
                 else: 
-                    optional.append(f" -{colors.fg(key, 'lightgreen_ex')} <value>")
+                    optional.append(f""" -{colors.fg(key, 'lightgreen_ex')} <value>""")
 
         r = ''.join(required)
         o = ''.join(optional)

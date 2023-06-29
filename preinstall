@@ -1,0 +1,113 @@
+#!/bin/bash
+# Installation process for Ubuntu server 20.04
+
+# Nginx and python pip
+apt install -y nginx python3-pip gnupg snapd curl
+
+echo "Sleeping 5 seconds"
+sleep 5
+
+systemctl start snapd
+
+# Certbot
+snap install core
+snap refresh core
+
+snap install --classic certbot
+
+# Mongo DB
+# Import the public key used by the package management system.
+
+if [[ ! -f "/usr/share/keyrings/mongodb-server-6.0.gpg" ]]; then
+
+curl -fsSL https://pgp.mongodb.com/server-6.0.asc | \
+   gpg -o /usr/share/keyrings/mongodb-server-6.0.gpg \
+   --dearmor
+
+# The operation should respond with an OK.
+# However, if you receive an error indicating that gnupg is not installed, you can:
+# Install gnupg and its required libraries using the following command:
+# apt-get install gnupg
+# Once installed, retry importing the key:
+# wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add -
+echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg] http://repo.mongodb.org/apt/debian bullseye/mongodb-org/6.0 main" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+
+apt update
+
+apt install -y mongodb-org
+
+systemctl enable mongod
+systemctl daemon-reload
+systemctl start mongod
+systemctl status mongod
+
+fi
+
+# Server site
+
+echo "[Unit]
+Description=Archon server
+After=network.target
+[Service]
+User=root
+WorkingDirectory=/opt/archon-server
+ExecStart=/opt/archon-server/server
+Restart=always
+[Install]
+WantedBy=multi-user.target
+" > /etc/systemd/system/archon-server.service
+
+systemctl enable archon-server
+systemctl start archon-server
+systemctl status archon-server
+
+echo "server {
+    server_name archon.warp.rocks;
+    access_log /var/log/nginx/archon.warp.rocks.access.log;
+    error_log /var/log/nginx/archon.warp.rocks.error.log;
+    add_header 'Access-Control-Allow-Origin' '*';
+    add_header 'Access-Control-Allow-Headers' \"Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With\";
+    location / {
+        proxy_pass  http://127.0.0.1:7007;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_read_timeout 600s;
+    }
+    location ~ /.well-known {
+        allow all;
+    }
+
+    listen 80;
+    listen [::]:80;
+}
+" > "/etc/nginx/sites-available/archon.warp.rocks.conf"
+
+ln -s /etc/nginx/sites-available/archon.warp.rocks.conf /etc/nginx/sites-enabled/
+systemctl restart nginx
+certbot --non-interactive --agree-tos --nginx -d archon.warp.rocks
+
+# Client site
+mkdir -p /var/www/arc.warp.rocks/web
+
+echo "server {
+    server_name arc.warp.rocks;
+    access_log /var/log/nginx/arc.warp.rocks.access.log;
+    error_log /var/log/nginx/arc.warp.rocks.error.log;
+    root /var/www/arc.warp.rocks/web;
+    index index.html;
+    location / {
+        try_files \$uri \$uri/ /index.html;
+    }
+    location ~ /.well-known {
+        allow all;
+    }
+
+    listen 80;
+    listen [::]:80;
+}
+" > "/etc/nginx/sites-available/arc.warp.rocks.conf"
+
+ln -s /etc/nginx/sites-available/arc.warp.rocks.conf /etc/nginx/sites-enabled/
+systemctl restart nginx
+certbot --non-interactive --agree-tos --nginx -d arc.warp.rocks
