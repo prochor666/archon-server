@@ -10,7 +10,7 @@ from archon.models.sites import sites
 from archon.models.servers import servers
 from archon.models.notifications import notifications
 from archon.mailer import mailer
-
+import nest_asyncio
 
 async def run_client(server, tasks=[], script=None, service_installer=False) -> dict:
 
@@ -220,6 +220,7 @@ def test_connection(server_id) -> dict:
         return {
             'status': False,
             'message': f"Server {server_id} not found",
+            'server': server,
             'shell': ['tuuu']
         }
 
@@ -229,6 +230,7 @@ def test_connection(server_id) -> dict:
         'echo "$(cat /etc/os-release)"',
         as_root('mkdir -p /opt/archon/scripts'),
         'echo "Monitoring service is $(systemctl is-active archon-monitor-collector.service)"',
+        'exit'
     ]
 
     return init_client(server, tasks)
@@ -356,15 +358,9 @@ def as_root(command) -> str:
 
 
 def init_client(server, tasks, script=None, service_installer=False) -> dict:
+    nest_asyncio.apply()
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    r = ''
-    async def async_get(server, tasks, script, service_installer):
-        r = await asyncio.get_event_loop().run_until_complete(
-            run_client(server, tasks, script, service_installer))
-
-    asyncio.run(async_get(server, tasks, script, service_installer))
-
-    """ r = asyncio.get_event_loop().run_until_complete(
-        run_client(server, tasks, script, service_installer)) """
+    r = asyncio.get_event_loop().run_until_complete(
+        run_client(server, tasks, script, service_installer))
     return r

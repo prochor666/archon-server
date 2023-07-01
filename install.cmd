@@ -37,6 +37,7 @@ IF %ERRORLEVEL% NEQ 0 (
     pip install dnspython
     pip install python-slugify
     pip install asyncssh
+    pip install nest_asyncio
     pip install requests
     pip install hypercorn
     pip install fastapi
