@@ -220,7 +220,7 @@ def test_connection(server_id) -> dict:
         return {
             'status': False,
             'message': f"Server {server_id} not found",
-            'shell': []
+            'shell': ['tuuu']
         }
 
     tasks = [
@@ -358,6 +358,13 @@ def as_root(command) -> str:
 def init_client(server, tasks, script=None, service_installer=False) -> dict:
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    r = asyncio.get_event_loop().run_until_complete(
-        run_client(server, tasks, script, service_installer))
+    r = ''
+    async def async_get(server, tasks, script, service_installer):
+        r = await asyncio.get_event_loop().run_until_complete(
+            run_client(server, tasks, script, service_installer))
+
+    asyncio.run(async_get(server, tasks, script, service_installer))
+
+    """ r = asyncio.get_event_loop().run_until_complete(
+        run_client(server, tasks, script, service_installer)) """
     return r

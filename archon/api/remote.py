@@ -7,11 +7,12 @@ def _test_connection(data_pass: dict = {}) -> dict:
     result = {
         'status': False,
         'message': 'Data error',
+        'data': data_pass,
         'shell': []
     }
 
-    if 'id' in data_pass.keys() and len(data_pass['id']) > 0:
-        result = remote.test_connection(data_pass['id'])
+    if 'server_id' in data_pass.keys() and len(data_pass['server_id']) > 0:
+        result = remote.test_connection(data_pass['server_id'])
 
     return result
 

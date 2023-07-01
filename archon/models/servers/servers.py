@@ -84,7 +84,7 @@ def modify(server_data: dict) -> dict:
                 server.update(modify_server)
                 server.update(server_data)
 
-                server['updater'] = app.config['user']['_id']
+                server['updater'] = app.store['user']['_id']
                 server['updated_at'] = utils.now()
 
                 servers = app.db['servers']
@@ -163,7 +163,7 @@ def insert(server_data: dict) -> dict:
             server_data.pop('updated_at', None)
 
             server['created_at'] = utils.now()
-            server['creator'] = app.config['user']['_id']
+            server['creator'] = app.store['user']['_id']
 
             servers = app.db['servers']
             _id = servers.insert_one(server)
@@ -172,7 +172,7 @@ def insert(server_data: dict) -> dict:
             html_message_data = {
                 'app_full_name': app.config['full_name'],
                 'app_name': app.config['name'],
-                'username': app.config['user']['username'],
+                'username': app.store['user']['username'],
                 'message': f"Site {server['name']} was created."
             }
             notifications.email('settings.notifications.servers',

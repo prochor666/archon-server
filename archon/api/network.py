@@ -100,6 +100,7 @@ def _scan_all_interfaces(data_pass: dict = {}) -> dict:
     
     return result
 
+
 def _scan_ip(data_pass: dict = {}) -> dict:
     ttl = ttl_from_str(utils.ark('ttl', data_pass, None))
     ports = utils.ark('ports', data_pass, '80, 443, 3306')
@@ -147,5 +148,4 @@ def _validate_domain(data_pass: dict = {}) -> dict:
             result['message'] = f"Domain name {domain} is valid"
 
     return result
-
 

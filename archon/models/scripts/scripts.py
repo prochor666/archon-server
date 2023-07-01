@@ -64,7 +64,7 @@ def modify(script_data: dict):
             script.update(modify_script)
             script.update(script_data)
 
-            script['updater'] = app.config['user']['_id']
+            script['updater'] = app.store['user']['_id']
             script['updated_at'] = utils.now()
 
             changed = utils.detect_object_changes([
@@ -126,7 +126,7 @@ def insert(script_data: dict):
             script_data.pop('updated_at', None)
 
             script['created_at'] = utils.now()
-            script['creator'] = app.config['user']['_id']
+            script['creator'] = app.store['user']['_id']
 
             if 'target' not in script or type(script['target']) != str:
                 script['target'] = 'site'
@@ -138,7 +138,7 @@ def insert(script_data: dict):
             html_message_data = {
                 'app_full_name': app.config['full_name'],
                 'app_name': app.config['name'],
-                'username': app.config['user']['username'],
+                'username': app.store['user']['username'],
                 'message': f"script {script['name']} was created."
             }
             notifications.email('settings.notifications.scripts',

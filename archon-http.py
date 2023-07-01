@@ -25,14 +25,19 @@ webapp.add_middleware(
     allow_headers=["*"],
 )
 
+def api_init(request: Request) -> bool:
+    set_client_ip(request)
+    app.store['user'] = users._get_system_user()
+    return True
 
-def is_authorized(request):
+
+def is_authorized(request: Request) -> dict:
     app.store['user'] = authorization.authorization_process(
                             request.headers.get('Authorization'))
     return app.store['user']
 
 
-def set_client_ip(request): 
+def set_client_ip(request: Request) -> str: 
     app.store['client_ip'] = str(request.client.host)
 
     if request.headers.get('X-Forwarded-For') != None:
@@ -43,7 +48,7 @@ def set_client_ip(request):
     return app.store['client_ip']
 
 
-def bad_status(message = ''):
+def bad_status(message: str = '') -> dict:
     return {
         'status': False,
         'message': message,
@@ -57,8 +62,9 @@ async def respond(
     response: Response, 
     request: Request) -> dict:
 
-    set_client_ip(request)
-    
+    api_init(request)
+    endpoint = str(endpoint).replace('/', '')
+
     match endpoint:
         case 'test':
             return common._test()
@@ -78,7 +84,8 @@ async def respond(
     response: Response, 
     request: Request) -> dict:
 
-    set_client_ip(request)
+    api_init(request)
+    endpoint = str(endpoint).replace('/', '')
 
     match endpoint:
         case 'os':
@@ -107,7 +114,7 @@ async def respond(
     ip: str = '',
     ports: str = '') -> dict:
 
-    set_client_ip(request)
+    api_init(request)
     endpoint = str(endpoint).replace('/', '')
 
     match endpoint:
@@ -127,9 +134,33 @@ async def respond(
             return network._ip()
         case 'scan_all_interfaces':
             return network._scan_all_interfaces()
+        case 'ssh_keys':
+            return network._ssh_keys()
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return bad_status(f"Endpoint {endpoint} not enabled")
+
+
+# Network
+@webapp.get("/api/v1/remote/{endpoint}", status_code=status.HTTP_200_OK)
+async def respond(
+    endpoint: str,
+    response: Response, 
+    request: Request,
+    server_id: str = '') -> dict:
+
+    api_init(request)
+    endpoint = str(endpoint).replace('/', '')
+
+    match endpoint:
+        case 'test_connection':
+            return remote._test_connection({
+                'server_id': server_id
+            })
+        case _:
+            response.status_code = status.HTTP_400_BAD_REQUEST
+            return bad_status(f"Endpoint {endpoint} not enabled")
+
 
 
 # Validation
@@ -142,7 +173,7 @@ async def respond(
     email: str = '',
     ip: str = '') -> dict:
     
-    set_client_ip(request)
+    api_init(request)
     endpoint = str(endpoint).replace('/', '')
 
     match endpoint:
@@ -171,7 +202,8 @@ async def respond(
     _filter: str = '',
     _sort: str = '') -> dict:
 
-    set_client_ip(request)
+    api_init(request)
+    endpoint = str(endpoint).replace('/', '')
 
     data = {
         'filter': _filter,
@@ -204,7 +236,7 @@ async def respond(
     request: Request, 
     _id: str) -> dict:
 
-    set_client_ip(request)
+    api_init(request)
     endpoint = str(endpoint).replace('/', '')
     _id = str(_id).replace('/', '')
 
@@ -232,7 +264,7 @@ async def respond(
     request: Request, 
     data: dict) -> dict:
     
-    set_client_ip(request)
+    api_init(request)
     endpoint = str(endpoint).replace('/', '')
 
     match endpoint:
@@ -260,7 +292,7 @@ async def respond(
     id: str,
     data: dict) -> dict:
     
-    set_client_ip(request)
+    api_init(request)
     endpoint = str(endpoint).replace('/', '')
     _id = str(id).replace('/', '')
     data.id = _id
@@ -289,7 +321,7 @@ async def respond(
     request: Request, 
     id: str) -> dict:
 
-    set_client_ip(request)
+    api_init(request)
     endpoint = str(endpoint).replace('/', '')
     _id = str(id).replace('/', '')
 
@@ -316,7 +348,7 @@ async def respond(
     response: Response, 
     request: Request, ) -> dict:
 
-    set_client_ip(request)
+    api_init(request)
     page = str(page).replace('/', '')
 
     match page:
