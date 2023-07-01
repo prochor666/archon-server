@@ -220,8 +220,7 @@ def test_connection(server_id) -> dict:
         return {
             'status': False,
             'message': f"Server {server_id} not found",
-            'server': server,
-            'shell': ['tuuu']
+            'shell': []
         }
 
     tasks = [
@@ -230,7 +229,6 @@ def test_connection(server_id) -> dict:
         'echo "$(cat /etc/os-release)"',
         as_root('mkdir -p /opt/archon/scripts'),
         'echo "Monitoring service is $(systemctl is-active archon-monitor-collector.service)"',
-        'exit'
     ]
 
     return init_client(server, tasks)
