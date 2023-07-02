@@ -278,30 +278,6 @@ def _search(data_pass: dict) -> dict:
     if type(data_pass) is dict and 'search' in data_pass:
         r = utils.index_eval()
 
-        server_collection = data.ex({
-            'collection': 'servers',
-            'filter': {
-                '$or': [
-                    {'name': {"$regex": f"{data_pass['search']}", "$options": "i"}},
-                    {'ipv4': {"$regex": f"{data_pass['search']}", "$options": "i"}},
-                    {'ipv6': {"$regex": f"{data_pass['search']}", "$options": "i"}}
-                ]
-            }
-        })
-
-        script_collection = data.ex({
-            'collection': 'scripts',
-            'filter': {
-                '$or': [
-                    {'name': {
-                        "$regex": f"{data_pass['search']}", "$options": "i"}}
-                ]
-            },
-            'exclude': {
-                "content": 0
-            }
-        })
-
         user_collection = data.ex({
             'collection': 'users',
             'filter': {
@@ -314,6 +290,17 @@ def _search(data_pass: dict) -> dict:
                         "$regex": f"{data_pass['search']}", "$options": "i"}},
                     {'lastname': {
                         "$regex": f"{data_pass['search']}", "$options": "i"}}
+                ]
+            }
+        })
+
+        server_collection = data.ex({
+            'collection': 'servers',
+            'filter': {
+                '$or': [
+                    {'name': {"$regex": f"{data_pass['search']}", "$options": "i"}},
+                    {'ipv4': {"$regex": f"{data_pass['search']}", "$options": "i"}},
+                    {'ipv6': {"$regex": f"{data_pass['search']}", "$options": "i"}}
                 ]
             }
         })
@@ -332,12 +319,53 @@ def _search(data_pass: dict) -> dict:
             }
         })
 
+        script_collection = data.ex({
+            'collection': 'scripts',
+            'filter': {
+                '$or': [
+                    {'name': {
+                        "$regex": f"{data_pass['search']}", "$options": "i"}}
+                ]
+            },
+            'exclude': {
+                "content": 0
+            }
+        })
+
+        device_collection = data.ex({
+            'collection': 'devices',
+            'filter': {
+                '$or': [
+                    {'name': {
+                        "$regex": f"{data_pass['search']}", "$options": "i"}}
+                ]
+            },
+            'exclude': {
+                "content": 0
+            }
+        })
+
+        item_collection = data.ex({
+            'collection': 'items',
+            'filter': {
+                '$or': [
+                    {'name': {
+                        "$regex": f"{data_pass['search']}", "$options": "i"}}
+                ]
+            },
+            'exclude': {
+                "content": 0
+            }
+        })
+
         return {
             'search_term': data_pass['search'],
-            'servers': data.collect(server_collection),
-            'scripts': data.collect(script_collection),
             'users': data.collect(user_collection),
-            'sites': data.collect(site_collection)
+            'servers': data.collect(server_collection),
+            'sites': data.collect(site_collection),
+            'scripts': data.collect(script_collection),
+            'devices': data.collect(device_collection),
+            'items': data.collect(item_collection),
         }
 
     return {}

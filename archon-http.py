@@ -55,6 +55,28 @@ def bad_status(message: str = '') -> dict:
     }
 
 
+# System HW/SW
+@webapp.get("/api/v1/search", tags=['Search'], status_code=status.HTTP_200_OK)
+async def respond(
+    response: Response, 
+    request: Request,
+    search: str = '') -> dict:
+
+    api_init(request)
+    #endpoint = str(endpoint).replace('/', '')
+    endpoint = 'search'
+    print(search)
+
+    match endpoint:
+        case 'search':
+            return assets._search({
+                'search': search
+            })
+        case _:
+            response.status_code = status.HTTP_400_BAD_REQUEST
+            return bad_status(f"Endpoint {endpoint} not enabled")
+
+
 # Common info
 @webapp.get("/api/v1/common/{endpoint}", tags=['Common'], status_code=status.HTTP_200_OK)
 async def respond(

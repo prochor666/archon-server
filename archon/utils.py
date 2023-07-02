@@ -305,11 +305,12 @@ def filter_to_dict(data_filter: list) -> dict:
 
 
 def index_eval() -> dict:
-    server_indexes = app.db['servers'].index_information()
-    device_indexes = app.db['devices'].index_information()
-    script_indexes = app.db['scripts'].index_information()
     user_indexes = app.db['users'].index_information()
+    server_indexes = app.db['servers'].index_information()
     site_indexes = app.db['sites'].index_information()
+    script_indexes = app.db['scripts'].index_information()
+    device_indexes = app.db['devices'].index_information()
+    item_indexes = app.db['items'].index_information()
 
     r = 'all created'
 
@@ -331,12 +332,15 @@ def index_eval() -> dict:
 
     if 'name_-1_domain_-1_dev_domain_-1' not in site_indexes:
         r = app.db['sites'].create_index(
-            [('name', -1), ('domain', -1), ('dev_domain', -1)])
+            [('name', -1), ('domain', -1)])
 
     return {
-        'server_indexes': server_indexes,
         'user_indexes': user_indexes,
-        'site_indexes': site_indexes
+        'server_indexes': server_indexes,
+        'site_indexes': site_indexes,
+        'script_indexes': script_indexes,
+        'device_indexes': device_indexes,
+        'item_indexes': item_indexes,
     }
 
 
