@@ -27,6 +27,12 @@ IF %ERRORLEVEL% NEQ 0 (
     ECHO PIP is required
     EXIT /B 0
 ) ELSE (
+    py -m pip install --upgrade pip
+    py -m pip install --user virtualenv
+    py -m venv archon-env
+    py -m pip install
+    .\archon-env\Scripts\activate
+
     pip install pymongo
     pip install pyyaml
     pip install pyopenssl

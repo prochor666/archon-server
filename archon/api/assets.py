@@ -6,6 +6,7 @@ from archon.models.servers import servers
 from archon.models.scripts import scripts
 from archon.models.sites import sites
 from archon.models.items import items
+from archon.models.users import users
 from archon.network import monitoring
 
 
@@ -276,7 +277,9 @@ def _site_delete(data_pass: dict = {}) -> dict:
 # Search
 def _search(data_pass: dict) -> dict:
     if type(data_pass) is dict and 'search' in data_pass:
-        r = utils.index_eval()
+        utils.index_eval()
+        user_exclude = users.filter_user_pattern()
+        user_exclude.update({'pin': 0, 'ulc': 0})
 
         user_collection = data.ex({
             'collection': 'users',
@@ -291,7 +294,8 @@ def _search(data_pass: dict) -> dict:
                     {'lastname': {
                         "$regex": f"{data_pass['search']}", "$options": "i"}}
                 ]
-            }
+            },
+            'exclude': user_exclude
         })
 
         server_collection = data.ex({

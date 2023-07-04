@@ -162,7 +162,7 @@ def insert(item_data: dict):
     return result
 
 
-def delete(item_data: dict):
+def delete(item_data: dict) -> dict:
     result = {
         'status': False,
         'message': 'Need id to delete item',
@@ -179,7 +179,7 @@ def delete(item_data: dict):
     return result
 
 
-def validator(item_data: dict):
+def validator(item_data: dict) -> dict:
     result = {
         'status': False,
         'message': "Data error",
@@ -199,7 +199,7 @@ def validator(item_data: dict):
     return result
 
 
-def _model(item_data: dict):
+def _model(item_data: dict) -> dict:
 
     item = {
         'name': utils.eval_key('name', item_data),

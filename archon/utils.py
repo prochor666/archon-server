@@ -334,13 +334,17 @@ def index_eval() -> dict:
         r = app.db['sites'].create_index(
             [('name', -1), ('domain', -1)])
 
+    if 'name_-1_type_-1_ref_-1' not in item_indexes:
+        r = app.db['items'].create_index(
+            [('name', -1), ('type', -1), ('ref', -1)])
+
     return {
-        'user_indexes': user_indexes,
-        'server_indexes': server_indexes,
-        'site_indexes': site_indexes,
-        'script_indexes': script_indexes,
-        'device_indexes': device_indexes,
-        'item_indexes': item_indexes,
+        'user_indexes': app.db['users'].index_information(),
+        'server_indexes': app.db['servers'].index_information(),
+        'site_indexes': app.db['sites'].index_information(),
+        'script_indexes': app.db['scripts'].index_information(),
+        'device_indexes': app.db['devices'].index_information(),
+        'item_indexes': app.db['items'].index_information(),
     }
 
 
