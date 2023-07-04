@@ -251,16 +251,16 @@ async def respond(
 
 
 # One item
-@webapp.get("/api/v1/{endpoint}/{_id}", status_code=status.HTTP_200_OK)
+@webapp.get("/api/v1/{endpoint}/{id}", status_code=status.HTTP_200_OK)
 async def respond(
     endpoint: str,
     response: Response, 
     request: Request, 
-    _id: str) -> dict:
+    id: str) -> dict:
 
     api_init(request)
     endpoint = str(endpoint).replace('/', '')
-    _id = str(_id).replace('/', '')
+    _id = str(id).replace('/', '')
 
     match endpoint:
         case 'users':
@@ -317,8 +317,8 @@ async def respond(
     api_init(request)
     endpoint = str(endpoint).replace('/', '')
     _id = str(id).replace('/', '')
-    data.id = _id
-
+    data['id'] = _id
+    print(data)
     match endpoint:
         case 'users':
             return users._user_modify(data)

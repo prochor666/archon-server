@@ -3,6 +3,7 @@ from archon import app, data, utils
 from archon.network import monitoring, remote
 from archon.models.servers import servers
 
+
 def _test_connection(data_pass: dict = {}) -> dict:
     result = {
         'status': False,

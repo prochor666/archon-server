@@ -120,7 +120,7 @@ def modify(user_data: dict) -> dict:
 
         modify_user = load_one({
             '_id': ObjectId(user_data['id'])
-        }, no_filter_pattern=True)
+        }, exclude_keys = False)
 
         if type(finder) is not dict and type(modify_user) is dict:
 
@@ -131,6 +131,8 @@ def modify(user_data: dict) -> dict:
             user = dict()
             user.update(modify_user)
             user.update(user_data)
+
+            #print('Modified user', user)
 
             changed = utils.detect_object_changes([
                 'username',
