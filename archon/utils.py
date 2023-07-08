@@ -86,7 +86,7 @@ def format_response(status: bool, text: str) -> str:
     return f"""{colors.fg('Ok', 'LIGHTGREEN_EX')}: {text}""" if status == True else f"""{colors.fg('Error', 'red')}: {text}"""
 
 
-def ark(key: str = '', obj: dict = {}, default: str = ''):
+def ark(obj: dict = {}, key: str = '', default: str = ''):
     return obj[key] if len(key) > 0 and key in obj.keys() else default
 
 
@@ -129,6 +129,17 @@ def ip_valid(ip: str) -> dict:
         r['message'] = str(e)
         return r
 
+
+def mac_valid(mac: str) -> dict:
+    r = {
+        'status': False,
+        'mac': mac,
+        'message': 'Invalid input',
+    }
+    if re.match("[0-9a-f]{2}([-:]?)[0-9a-f]{2}(\\1[0-9a-f]{2}){4}$", mac.lower()):
+        r['status'] = True
+        r['message'] = 'Valid MAC address'
+    return r
 
 def domain_dns_info(domain: str, record_filter: list = []) -> list:
     record_types = [
@@ -360,8 +371,10 @@ def dos2unix(s: str) -> str:
     return str(s).replace('\r\n', '\n')
 
 
-def rnd(length: int = 7):
-    base = string.digits +  string.ascii_letters
+def rnd(length: int = 7, digits_only: bool = False):
+    base = string.digits
+    if digits_only == False:
+        base = string.digits +  string.ascii_letters
     rstr =  ''.join(random.choice(base) for i in range(length))
     return rstr
 

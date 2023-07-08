@@ -55,7 +55,7 @@ then
     pip install asyncssh
     pip install nest_asyncio
     pip install requests
-    pip install hypercorn
+    pip install uvicorn
     pip install fastapi
     pip install mysql-connector-python
     pip install colorama

@@ -3,8 +3,8 @@ from archon.models.users import users
 import json
 
 def _users(data_pass: dict = {}) -> dict:
-    _filter = utils.ark('filter', data_pass)
-    _sort = utils.ark('sort', data_pass)
+    _filter = utils.ark(data_pass, 'filter')
+    _sort = utils.ark(data_pass, 'sort')
     
     if type(_filter) is str:
         data_pass['filter'] =  json.loads(_filter) if len(_filter) > 0 else {}

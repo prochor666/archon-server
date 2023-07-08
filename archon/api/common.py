@@ -15,12 +15,12 @@ def _get_enums(data_pass: dict = {}) -> dict:
 
 
 def _is_email(data_pass: dict = {}) -> dict:
-    email = utils.ark('email', data_pass)
+    email = utils.ark(data_pass, 'email')
     return mailer.check_email(email)
 
 
 def _is_ip(data_pass: dict = {}) -> dict:
-    ip = utils.ark('ip', data_pass)
+    ip = utils.ark(data_pass, 'ip')
     return utils.ip_valid(ip)
 
 

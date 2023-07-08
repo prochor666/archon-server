@@ -1,7 +1,7 @@
 from archon import app, compat, utils
 import json
 #from archon.api.auth import auth as login
-from archon.api import assets, auth, common, db, network, remote, system, users 
+from archon.api import assets, auth, common, db, devices, network, remote, system, users 
 from archon.auth import auth as authorization
 
 from fastapi import FastAPI, Request, Response, status
@@ -23,18 +23,21 @@ webapp.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"]
 )
 
-def api_init(request: Request) -> bool:
+def api_init(request: Request) -> dict:
+    result = is_authorized(request)
     set_client_ip(request)
-    app.store['user'] = users._get_system_user()
-    return True
+    # app.store['user'] = users._get_system_user()
+    return result
 
 
 def is_authorized(request: Request) -> dict:
-    app.store['user'] = authorization.authorization_process(
-                            request.headers.get('Authorization'))
-    return app.store['user']
+    token = request.headers.get('Authorization')
+    authResult = authorization.authorization_process(token = str(token))
+    app.store['user'] = authResult
+    return authResult
 
 
 def set_client_ip(request: Request) -> str: 
@@ -63,9 +66,7 @@ async def respond(
     search: str = '') -> dict:
 
     api_init(request)
-    #endpoint = str(endpoint).replace('/', '')
     endpoint = 'search'
-    print(search)
 
     match endpoint:
         case 'search':
@@ -74,7 +75,7 @@ async def respond(
             })
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
-            return bad_status(f"Endpoint {endpoint} not enabled")
+            return bad_status(f"Endpoint {str(request.method)}/{endpoint} not enabled")
 
 
 # Common info
@@ -96,7 +97,7 @@ async def respond(
             return common._countries()
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
-            return bad_status(f"Endpoint {endpoint} not enabled")
+            return bad_status(f"Endpoint {str(request.method)}/{endpoint} not enabled")
 
 
 # System HW/SW
@@ -122,11 +123,11 @@ async def respond(
             return system._disk()
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
-            return bad_status(f"Endpoint {endpoint} not enabled")
+            return bad_status(f"Endpoint {str(request.method)}/{endpoint} not enabled")
 
 
 # Network
-@webapp.get("/api/v1/network/{endpoint}", status_code=status.HTTP_200_OK)
+@webapp.get("/api/v1/network/{endpoint}", tags=["Network"], status_code=status.HTTP_200_OK)
 async def respond(
     endpoint: str,
     response: Response, 
@@ -160,11 +161,11 @@ async def respond(
             return network._ssh_keys()
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
-            return bad_status(f"Endpoint {endpoint} not enabled")
+            return bad_status(f"Endpoint {str(request.method)}/{endpoint} not enabled")
 
 
 # Network
-@webapp.get("/api/v1/remote/{endpoint}", status_code=status.HTTP_200_OK)
+@webapp.get("/api/v1/remote/{endpoint}", tags=["Remote"], status_code=status.HTTP_200_OK)
 async def respond(
     endpoint: str,
     response: Response, 
@@ -181,12 +182,12 @@ async def respond(
             })
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
-            return bad_status(f"Endpoint {endpoint} not enabled")
+            return bad_status(f"Endpoint {str(request.method)}/{endpoint} not enabled")
 
 
 
 # Validation
-@webapp.get("/api/v1/validation/{endpoint}", status_code=status.HTTP_200_OK)
+@webapp.get("/api/v1/validation/{endpoint}", tags=["Validation"], status_code=status.HTTP_200_OK)
 async def respond(
     endpoint: str,
     response: Response, 
@@ -213,10 +214,10 @@ async def respond(
             })
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
-            return bad_status(f"Endpoint {endpoint} not enabled")
+            return bad_status(f"Endpoint {str(request.method)}/{endpoint} not enabled")
 
 # Browser
-@webapp.get("/api/v1/{endpoint}", status_code=status.HTTP_200_OK)
+@webapp.get("/api/v1/{endpoint}", tags=["Browse"], status_code=status.HTTP_200_OK)
 async def respond(
     endpoint: str,
     response: Response, 
@@ -224,15 +225,19 @@ async def respond(
     _filter: str = '',
     _sort: str = '') -> dict:
 
-    api_init(request)
+    authorization = api_init(request)
     endpoint = str(endpoint).replace('/', '')
 
     data = {
         'filter': _filter,
         'sort': _sort
     }
-    
+
     match endpoint:
+        case 'auth':
+            return authorization
+        case 'devices': 
+            return devices._devices(data)
         case 'users':
             return users._users(data)
         case 'servers':
@@ -247,11 +252,11 @@ async def respond(
             return assets._items(data)
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
-            return bad_status(f"Endpoint {endpoint} not enabled")
+            return bad_status(f"Endpoint {str(request.method)}/{endpoint} not X enabled")
 
 
 # One item
-@webapp.get("/api/v1/{endpoint}/{id}", status_code=status.HTTP_200_OK)
+@webapp.get("/api/v1/{endpoint}/{id}", tags=["Detail"], status_code=status.HTTP_200_OK)
 async def respond(
     endpoint: str,
     response: Response, 
@@ -265,6 +270,10 @@ async def respond(
     match endpoint:
         case 'users':
             return users._load_one(_id)
+        case 'devices':
+            return devices._device_one(_id)
+        case 'device_pair':
+            return devices._device_pair(_id)
         case 'servers':
             return assets._server_one(_id)
         case 'scripts':
@@ -275,11 +284,33 @@ async def respond(
             return assets._item_one(_id)
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
-            return bad_status(f"Endpoint {endpoint} not enabled")
+            return bad_status(f"Endpoint {str(request.method)}/{endpoint} not Y enabled")
+
+
+# Auth
+@webapp.post("/api/v1/auth/{endpoint}", tags=["Auth"], status_code=status.HTTP_200_OK)
+async def respond(
+    endpoint: str,
+    response: Response, 
+    request: Request, 
+    data: dict = {}) -> dict:
+    
+    api_init(request)
+    endpoint = str(endpoint).replace('/', '')
+    
+    match endpoint:
+        case 'activate':
+            return auth._activate(data)
+        case 'recover':
+            return auth._recover(data)
+        case _:
+            response.status_code = status.HTTP_400_BAD_REQUEST
+            return bad_status(f"Endpoint {str(request.method)}/{endpoint} not enabled")
+
 
 
 # New item
-@webapp.post("/api/v1/{endpoint}", status_code=status.HTTP_200_OK)
+@webapp.post("/api/v1/{endpoint}", tags=["Create"], status_code=status.HTTP_200_OK)
 async def respond(
     endpoint: str,
     response: Response, 
@@ -292,6 +323,8 @@ async def respond(
     match endpoint:
         case 'users':
             return users._user_create(data)
+        case 'devices':
+            return devices._device_create(data)
         case 'servers':
             return assets._server_create(data)
         case 'scripts':
@@ -302,11 +335,11 @@ async def respond(
             return assets._item_create(data)
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
-            return bad_status(f"Endpoint {endpoint} not enabled")
+            return bad_status(f"Endpoint {str(request.method)}/{endpoint} not enabled")
 
 
 # Modify item
-@webapp.put("/api/v1/{endpoint}/{id}", status_code=status.HTTP_200_OK)
+@webapp.put("/api/v1/{endpoint}/{id}", tags=["Modify"], status_code=status.HTTP_200_OK)
 async def respond(
     endpoint: str,
     response: Response, 
@@ -316,12 +349,13 @@ async def respond(
     
     api_init(request)
     endpoint = str(endpoint).replace('/', '')
-    _id = str(id).replace('/', '')
-    data['id'] = _id
+    data['id'] = str(id).replace('/', '')
     print(data)
     match endpoint:
         case 'users':
             return users._user_modify(data)
+        case 'devices':
+            return devices._device_modify(data)
         case 'servers':
             return assets._server_modify(data)
         case 'scripts':
@@ -332,11 +366,11 @@ async def respond(
             return assets._item_modify(data)
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
-            return bad_status(f"Endpoint {endpoint} not enabled")
+            return bad_status(f"Endpoint {str(request.method)}/{endpoint} not enabled")
 
 
 # Delete item
-@webapp.delete("/api/v1/{endpoint}/{id}", status_code=status.HTTP_200_OK)
+@webapp.delete("/api/v1/{endpoint}/{id}", tags=["Delete"], status_code=status.HTTP_200_OK)
 async def respond(
     endpoint: str,
     response: Response, 
@@ -350,6 +384,8 @@ async def respond(
     match endpoint:
         case 'users':
             return users._user_delete(_id)
+        case 'devices':
+            return devices._device_delete(_id)
         case 'servers':
             return assets._server_delete(_id)
         case 'scripts':
@@ -360,11 +396,11 @@ async def respond(
             return assets._item_delete(_id)
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
-            return bad_status(f"Endpoint {endpoint} not enabled")
+            return bad_status(f"Endpoint {str(request.method)}/{endpoint} not enabled")
 
 
 # Web routing
-@webapp.get("/{page}/", status_code=status.HTTP_200_OK)
+@webapp.get("/{page}/", tags=["Page"], status_code=status.HTTP_200_OK)
 async def respond(
     page: str,
     response: Response, 

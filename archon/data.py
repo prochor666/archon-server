@@ -27,6 +27,8 @@ def collect_one(document: dict) -> dict:
         document['_id'] = str(document['_id'])
     if 'creator' in document:
         document['creator'] = str(document['creator'])
+    if 'updater' in document:
+        document['updater'] = str(document['updater'])
     if 'owner' in document:
         document['owner'] = str(document['owner'])
     if 'user_id' in document:

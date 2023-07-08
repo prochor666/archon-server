@@ -1,25 +1,28 @@
-from archon import app, data
+from archon import app, data, utils
 from archon.models.users import users
 
 
-def authorization_process(authorization: str, required = True) -> dict:
+def authorization_process(token: str = '', required = True) -> dict:
 
     result = {
         'status': False,
         'message': "Authorization failed",
+        'token': token,
         'data': {}
     }
 
     if required == True:
-        if len(authorization) > 0:
-            auth_token = extract_auth_token(
-                authorization)
+        if len(token) > 0:
+            auth_token = extract_auth_token(token)
+            print('Auth token', auth_token)
+            result['token'] = auth_token
+            user_data = login(auth_token = auth_token)
+            result['message'] = "Token found, secret check failed"
 
-            result['message'] = "User found, secret check failed"
-
-            if len(auth_token) > 63:
-                user_data = login({'auth_token': auth_token})
+            if (utils.ark(user_data, 'status', False) == True):
                 result['data'] = user_data
+                result['message'] = "User found, secret check is fine"
+                result['status'] = True
     else: 
         result['message'] = "No authorization required"
         result['status'] = True
@@ -28,7 +31,7 @@ def authorization_process(authorization: str, required = True) -> dict:
 
 
 def login(auth_token: str) -> dict:
-    result = False
+    result = {}
 
     user_data = get_user_from_db(auth_token)
 
@@ -44,19 +47,17 @@ def login(auth_token: str) -> dict:
             result['username'] = user_data['username']
             result['role'] = user_data['role']
             result['email'] = user_data['email']
-            result['_id'] = user_data['_id']
+            result['id'] = user_data['_id']
             result['status'] = True
 
     return result
 
 
 def extract_auth_token(header: str) -> str:
-    auth_token = ''
+    auth_token = header
     prefix = app.config['authorization']['header_prefix']
-
-    if header.startswith(prefix, 0, len(prefix)):
+    if len(prefix) > 0 and header.startswith(prefix, 0, len(prefix)):
         auth_token = header[len(prefix):]
-
     return auth_token
 
 

@@ -12,8 +12,8 @@ from archon.network import monitoring
 
 # Item modifiers and listings
 def _items(data_pass: dict = {}) -> dict:
-    _filter = utils.ark('filter', data_pass)
-    _sort = utils.ark('sort', data_pass)
+    _filter = utils.ark(data_pass, 'filter')
+    _sort = utils.ark(data_pass, 'sort')
 
     if type(_filter) is str:
         data_pass['filter'] =  json.loads(_filter) if len(_filter) > 0 else {}
@@ -75,8 +75,8 @@ def _item_delete(data_pass: dict = {}) -> dict:
 
 # Server modifiers and listings
 def _servers(data_pass: dict = {}) -> dict:
-    _filter = utils.ark('filter', data_pass)
-    _sort = utils.ark('sort', data_pass)
+    _filter = utils.ark(data_pass, 'filter')
+    _sort = utils.ark(data_pass, 'sort')
     
     if type(_filter) is str:
         data_pass['filter'] =  json.loads(_filter) if len(_filter) > 0 else {}
@@ -139,8 +139,8 @@ def _server_delete(data_pass: dict = {}) -> dict:
 
 # Script modifiers and listings
 def _scripts(data_pass: dict = {}) -> dict:
-    _filter = utils.ark('filter', data_pass)
-    _sort = utils.ark('sort', data_pass)
+    _filter = utils.ark(data_pass, 'filter')
+    _sort = utils.ark(data_pass, 'sort')
 
     if type(_filter) is str:
         data_pass['filter'] =  json.loads(_filter) if len(_filter) > 0 else {}
@@ -202,8 +202,8 @@ def _script_delete(data_pass: dict = {}) -> dict:
 
 # Site modifiers and listings
 def _sites(data_pass: dict = {}) -> dict:
-    _filter = utils.ark('filter', data_pass)
-    _sort = utils.ark('sort', data_pass)
+    _filter = utils.ark(data_pass, 'filter')
+    _sort = utils.ark(data_pass, 'sort')
 
     if type(_filter) is str:
         data_pass['filter'] =  json.loads(_filter) if len(_filter) > 0 else {}
@@ -377,8 +377,8 @@ def _search(data_pass: dict) -> dict:
 
 # Notifications
 def _notifications(data_pass: dict = {}) -> dict:
-    _filter = utils.ark('filter', data_pass)
-    _sort = utils.ark('sort', data_pass)
+    _filter = utils.ark(data_pass, 'filter')
+    _sort = utils.ark(data_pass, 'sort')
     data_pass = {
         'filter': json.loads(_filter) if len(_filter) > 0 else {},
         'sort': json.loads(_sort) if len(_sort) > 0 else {}

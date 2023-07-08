@@ -62,7 +62,7 @@ def insert(user_data: dict) -> dict:
                 http_origin = str(user_data.pop('http_origin', None))
 
             user['created_at'] = utils.now()
-            user['creator'] = app.store['user']['_id']
+            user['creator'] = app.store['user']['data']['_id']
 
             users_collection.insert_one(user)
 
@@ -95,6 +95,8 @@ def insert(user_data: dict) -> dict:
 
 def modify(user_data: dict) -> dict:
     result = validator(user_data)
+
+    print('User in store', app.store['user'])
 
     if 'id' not in user_data.keys():
         result['message'] = 'Need id for modify user'
@@ -156,14 +158,14 @@ def modify(user_data: dict) -> dict:
                 html_template = 'modify'
 
             user['secret'] = hash_user(user)
-            user['updater'] = app.store['user']['_id']
+            user['updater'] = app.store['user']['data']['id']
             user['updated_at'] = utils.now()
 
             if 'created_at' not in modify_user:
                 user['created_at'] = utils.now()
 
             if 'creator' not in modify_user:
-                user['creator'] = app.store['user']['_id']
+                user['creator'] = app.store['user']['data']['id']
 
             user = user_model(user)
             users_collection.update_one(
@@ -207,6 +209,7 @@ def recover(unifield: str, http_origin: str = '', soft: bool = True) -> dict:
     result = {
         'message': "User not found",
         'status': False,
+        'login': unifield,
         'recovery_type': "soft" if soft == True else "full"
     }
 
@@ -215,7 +218,7 @@ def recover(unifield: str, http_origin: str = '', soft: bool = True) -> dict:
             {'username': unifield},
             {'email': unifield}
         ]
-    }, no_filter_pattern=True)
+    }, exclude_keys = False)
 
     if type(user) is dict:
 
@@ -263,18 +266,28 @@ def recover(unifield: str, http_origin: str = '', soft: bool = True) -> dict:
 
 
 def activate(user_data: dict) -> dict:
+    
+    if 'pin' in user_data.keys() and len(user_data['pin']) > 0:
+        user_data['pin'] = int(user_data['pin'])
+
+    ulc = utils.eval_key('ulc', user_data)
+    pin = utils.eval_key('pin', user_data, 'int')
+
+    print('ULC:', ulc)
+    print('PIN:',pin)
+
     user = load_one({
         '$and': [
-            {'ulc': utils.eval_key('ulc', user_data)},
-            {'pin': utils.eval_key('pin', user_data, 'int')}
+            { 'ulc': ulc },
+            { 'pin': pin }
         ]
-    }, no_filter_pattern=True)
+    }, exclude_keys = False)
 
     result = {
         'message': "Invalid activation",
         'status': False,
-        'ulc': utils.eval_key('ulc', user_data),
-        'pin': utils.eval_key('pin', user_data, 'int'),
+        'ulc': ulc,
+        'pin': pin,
     }
 
     if type(user) is dict:

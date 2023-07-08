@@ -29,8 +29,8 @@ def _ssh_keys(data_pass: dict = {}) -> dict:
 
 
 def _domain_info(data_pass: dict = {}) -> dict: 
-    domain = utils.ark('domain', data_pass)
-    dns_records = utils.ark('dns_records', data_pass, '')
+    domain = utils.ark(data_pass, 'domain')
+    dns_records = utils.ark(data_pass, 'dns_records', '')
     result = {
         'status': False, 
         'message': 'Data error', 
@@ -72,8 +72,8 @@ def _ip(data_pass: dict = {}) -> list:
 
 
 def _scan_all_interfaces(data_pass: dict = {}) -> dict:
-    ttl = ttl_from_str(utils.ark('ttl', data_pass, None))
-    ports = utils.ark('ports', data_pass, '80, 443, 3306')
+    ttl = ttl_from_str(utils.ark(data_pass, 'ttl', None))
+    ports = utils.ark(data_pass, 'ports', '80, 443, 3306')
     
     result = {
         'status': False,
@@ -102,9 +102,9 @@ def _scan_all_interfaces(data_pass: dict = {}) -> dict:
 
 
 def _scan_ip(data_pass: dict = {}) -> dict:
-    ttl = ttl_from_str(utils.ark('ttl', data_pass, None))
-    ports = utils.ark('ports', data_pass, '80, 443, 3306')
-    ip = utils.ark('ip', data_pass)
+    ttl = ttl_from_str(utils.ark(data_pass, 'ttl', None))
+    ports = utils.ark(data_pass, 'ports', '80, 443, 3306')
+    ip = utils.ark(data_pass, 'ip')
 
     result = {
         'status': False,
@@ -132,7 +132,7 @@ def _scan_ip(data_pass: dict = {}) -> dict:
 
 
 def _validate_domain(data_pass: dict = {}) -> dict:
-    domain = utils.ark('domain', data_pass)
+    domain = utils.ark(data_pass, 'domain')
     result = {
         'status': False,
         'message': 'Data error',

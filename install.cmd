@@ -27,12 +27,6 @@ IF %ERRORLEVEL% NEQ 0 (
     ECHO PIP is required
     EXIT /B 0
 ) ELSE (
-    py -m pip install --upgrade pip
-    py -m pip install --user virtualenv
-    py -m venv archon-env
-    py -m pip install
-    .\archon-env\Scripts\activate
-
     pip install pymongo
     pip install pyyaml
     pip install pyopenssl
@@ -45,7 +39,7 @@ IF %ERRORLEVEL% NEQ 0 (
     pip install asyncssh
     pip install nest_asyncio
     pip install requests
-    pip install hypercorn
+    pip install uvicorn
     pip install fastapi
     pip install mysql-connector-python
     pip install colorama
