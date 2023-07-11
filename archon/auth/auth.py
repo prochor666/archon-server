@@ -14,7 +14,7 @@ def authorization_process(token: str = '', required = True) -> dict:
     if required == True:
         if len(token) > 0:
             auth_token = extract_auth_token(token)
-            print('Auth token', auth_token)
+            #print('Auth token', auth_token)
             result['token'] = auth_token
             user_data = login(auth_token = auth_token)
             result['message'] = "Token found, secret check failed"

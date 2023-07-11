@@ -2,7 +2,7 @@ import json
 from bson.objectid import ObjectId
 from archon import app, data, utils
 from archon.models.notifications import notifications
-
+from archon.models.users import users
 
 def load(filter_data: dict | None = None, sort_data: list | None = None, exclude_data: dict | None = None):
     finder = {
@@ -22,7 +22,7 @@ def load_one(filter_data: dict):
     return data.one(finder)
 
 
-def modify(device_data: dict):
+def modify(device_data: dict, audit_system: bool = False) -> dict:
     result = validator(device_data)
 
     if 'id' not in device_data.keys():
@@ -64,14 +64,22 @@ def modify(device_data: dict):
             device.update(modify_device)
             device.update(device_data)
 
-            device['updater'] = app.store['user']['data']['id']
+            if audit_system == True:
+                system_user = users.system_user()
+                device['updater'] = system_user['_id']
+            else:
+                device['updater'] = app.store['user']['data']['id']
             device['updated_at'] = utils.now()
 
             changed = utils.detect_object_changes([
                 'name',
                 'description',
-                'safe',
-                'content'
+                'type',
+                'content',
+                'active',
+                'ref',
+                'meta',
+                'settings',
             ], modify_device, device)
 
             devices = app.db['devices']
@@ -88,7 +96,7 @@ def modify(device_data: dict):
                 # Notification comes here
                 result['message'] = f"Device {device['name']} modified"
                 notifications.db(
-                    'device', str(_id), f"Device {device['name']} was modified.", json.dumps(data.collect_one(device), indent=4))
+                    'device', str(_id), f"Device {device['name']} was modified.", json.dumps(data.collect_one(device), indent=4), audit_system)
 
             result['status'] = True
             result['changed'] = changed
@@ -185,7 +193,7 @@ def validator(device_data: dict) -> dict:
         'message': "Data error",
     }
 
-    if 'mac'in device_data.keys() and 'content'in device_data.keys() and 'name'in device_data.keys() and 'ip' in device_data.keys():
+    if 'mac'in device_data.keys() and 'name'in device_data.keys() and 'ip' in device_data.keys():
 
         if type(device_data['mac']) != str or len(device_data['mac']) < 1:
             result['message'] = 'MAC address is not defined'
@@ -207,10 +215,6 @@ def validator(device_data: dict) -> dict:
         
         if type(device_data['name']) != str or len(device_data['name']) < 1:
             result['message'] = f"'{device_data['name']}' is not a valid device name"
-            return result
-
-        if type(device_data['content']) != str or len(device_data['content']) < 1:
-            result['message'] = f"{device_data['name']} invalid device content"
             return result
 
         result['status'] = True

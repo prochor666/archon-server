@@ -50,23 +50,31 @@ def _device_one(id: str) -> dict:
     return result
 
 
-def _device_pair(mac: str) -> dict:
+def _device_pair(data_pass: dict) -> dict:
     r = devices.load_one(filter_data = {
-        'mac': mac
+        'mac':  utils.ark(data_pass, 'mac')
     })
 
     result = {
         'status': False,
         'message': "No device",
-        'mac': mac,
+        'mac': utils.ark(data_pass, 'mac'),
         'pin': utils.rnd(6, digits_only = True),
         'device': {},
     }
 
     if type(r).__name__ == 'dict':
         #r['_id'] = str(r['_id'])
+        device_data_found = data.collect_one(r)
+        data_pass['id'] = device_data_found['_id']
+        data_pass['ip'] = app.store['client_ip']
+        device_data_found.update(data_pass)
+        device_data_found['meta']['last_update'] = utils.now()
+        mod = devices.modify(device_data = device_data_found, audit_system = True)
+        #print(json.dumps(device_data_found, indent = 4))
         result['status'] = True
-        result['device'] = data.collect_one(r)
+        result['device'] = data_pass
+        result['pin'] = device_data_found['settings']['pin']
         result['message'] = f"Found device"
     return result
 

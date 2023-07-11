@@ -64,7 +64,7 @@ def modify(script_data: dict):
             script.update(modify_script)
             script.update(script_data)
 
-            script['updater'] = app.store['user']['_id']
+            script['updater'] = app.store['user']['data']['id']
             script['updated_at'] = utils.now()
 
             changed = utils.detect_object_changes([
@@ -126,7 +126,7 @@ def insert(script_data: dict):
             script_data.pop('updated_at', None)
 
             script['created_at'] = utils.now()
-            script['creator'] = app.store['user']['_id']
+            script['creator'] = app.store['user']['data']['id']
 
             if 'target' not in script or type(script['target']) != str:
                 script['target'] = 'site'

@@ -303,6 +303,8 @@ async def respond(
             return auth._activate(data)
         case 'recover':
             return auth._recover(data)
+        case 'pair': 
+            return devices._device_pair(data)
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return bad_status(f"Endpoint {str(request.method)}/{endpoint} not enabled")
@@ -350,7 +352,7 @@ async def respond(
     api_init(request)
     endpoint = str(endpoint).replace('/', '')
     data['id'] = str(id).replace('/', '')
-    print(data)
+    
     match endpoint:
         case 'users':
             return users._user_modify(data)

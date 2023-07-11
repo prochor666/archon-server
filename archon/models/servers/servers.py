@@ -84,7 +84,7 @@ def modify(server_data: dict) -> dict:
                 server.update(modify_server)
                 server.update(server_data)
 
-                server['updater'] = app.store['user']['_id']
+                server['updater'] = app.store['user']['data']['id']
                 server['updated_at'] = utils.now()
 
                 servers = app.db['servers']
@@ -163,7 +163,7 @@ def insert(server_data: dict) -> dict:
             server_data.pop('updated_at', None)
 
             server['created_at'] = utils.now()
-            server['creator'] = app.store['user']['_id']
+            server['creator'] = app.store['user']['data']['id']
 
             servers = app.db['servers']
             _id = servers.insert_one(server)

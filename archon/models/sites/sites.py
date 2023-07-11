@@ -92,7 +92,7 @@ def modify(site_data: dict) -> dict:
             if 'home_dir' not in site.keys() or len(site['home_dir']) == 0:
                 site['home_dir'] = site['domain']
 
-            site['updater'] = app.store['user']['_id']
+            site['updater'] = app.store['user']['data']['id']
             site['updated_at'] = utils.now()
 
             changed = utils.detect_object_changes([
@@ -173,7 +173,7 @@ def insert(site_data: dict) -> dict:
             site_data.pop('updated_at', None)
 
             site['created_at'] = utils.now()
-            site['creator'] = app.store['user']['_id']
+            site['creator'] = app.store['user']['data']['id']
             site['home_dir'] = site['domain']
 
             sites = app.db['sites']
