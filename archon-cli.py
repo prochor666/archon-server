@@ -7,6 +7,11 @@ import os
 compat.check_version()
 app.mode = 'cli'
 
+app.store['user'] = {
+    'data': users._get_system_user(),
+}
+
+users._secure_auth_user()
 
 def callback_with_vars(endpoint_schema: dict, data_pass: dict) -> dict:
     result = {}
@@ -77,11 +82,9 @@ def cli_app():
         # data_pass = utils.validate_data_pass(vars(args))
         data_pass = utils.validate_data_pass(vars(parser.parse_args()))
 
-        app.store['user'] = users._get_system_user()
-
-        display_username = f"[{os.getlogin()} as {app.store['user']['username']}]"
+        display_username = f"[{os.getlogin()} as {app.store['user']['data']['username']}]"
         if type(display_username) is not str:
-            display_username = app.store['user']['username']
+            display_username = app.store['user']['data']['username']
         # Consider or not to use
         # import getpass
         #display_username = getpass.getuser()

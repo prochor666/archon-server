@@ -43,13 +43,14 @@ def login(auth_token: str) -> dict:
         })
 
         if 'username' in user_data.keys() and 'pwd' in user_data.keys() and auth_token == user_data['pwd'] and secret_key_check == user_data['secret']:
+            result = user_data
             result['message'] = "Authorization succeeded"
-            result['username'] = user_data['username']
-            result['role'] = user_data['role']
-            result['email'] = user_data['email']
-            result['id'] = user_data['_id']
+            #result['username'] = user_data['username']
+            #result['role'] = user_data['role']
+            #result['email'] = user_data['email']
+            #result['id'] = user_data['_id']
             result['status'] = True
-
+            
     return result
 
 

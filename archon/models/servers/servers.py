@@ -172,7 +172,7 @@ def insert(server_data: dict) -> dict:
             html_message_data = {
                 'app_full_name': app.config['full_name'],
                 'app_name': app.config['name'],
-                'username': app.store['user']['username'],
+                'username': app.store['user']['data']['username'],
                 'message': f"Site {server['name']} was created."
             }
             notifications.email('settings.notifications.servers',

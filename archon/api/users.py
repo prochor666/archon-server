@@ -74,3 +74,11 @@ def _user_delete(data_pass: dict = {}) -> dict:
 def _user_activate(data_pass: dict = {}) -> dict:
     result = users.activate(data_pass)
     return result
+
+
+def _secure_auth_user():
+    keys = ['pwd', 'salt', 'secret', 'ulc', 'creator', 'updater', 'updated_at', 'created_at', 'pin']
+    
+    for key in keys:
+        if (utils.ark(app.store['user']['data'], key, False) != False):
+            app.store['user']['data'].pop(key)

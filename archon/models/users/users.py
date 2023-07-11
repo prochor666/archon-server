@@ -96,8 +96,6 @@ def insert(user_data: dict) -> dict:
 def modify(user_data: dict) -> dict:
     result = validator(user_data)
 
-    print('User in store', app.store['user'])
-
     if 'id' not in user_data.keys():
         result['message'] = 'Need id for modify user'
         result['status'] = False
@@ -273,8 +271,8 @@ def activate(user_data: dict) -> dict:
     ulc = utils.eval_key('ulc', user_data)
     pin = utils.eval_key('pin', user_data, 'int')
 
-    print('ULC:', ulc)
-    print('PIN:',pin)
+    # print('ULC:', ulc)
+    # print('PIN:',pin)
 
     user = load_one({
         '$and': [

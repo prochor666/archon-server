@@ -14,7 +14,7 @@ def load(filter_data: dict | None = None, sort_data: list | None = None, exclude
 
 
 def email(case: str, template: str, subject: str, html_message_data: dict, att: str = ''):
-    if app.store['user']['username'] != 'system':
+    if app.store['user']['data']['username'] != 'system':
         valid_users = data.collect(data.ex({
             'collection': 'users',
             'filter': {

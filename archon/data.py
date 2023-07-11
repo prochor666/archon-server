@@ -25,6 +25,7 @@ def one(finder: dict = {}) -> dict:
 def collect_one(document: dict) -> dict:
     if '_id' in document:
         document['_id'] = str(document['_id'])
+        document['id'] = document['_id']
     if 'creator' in document:
         document['creator'] = str(document['creator'])
     if 'updater' in document:

@@ -37,6 +37,7 @@ def is_authorized(request: Request) -> dict:
     token = request.headers.get('Authorization')
     authResult = authorization.authorization_process(token = str(token))
     app.store['user'] = authResult
+    users._secure_auth_user()
     return authResult
 
 
@@ -304,6 +305,8 @@ async def respond(
         case 'recover':
             return auth._recover(data)
         case 'pair': 
+            app.store['user']['data'] = users._get_system_user()
+            users._secure_auth_user()
             return devices._device_pair(data)
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST

@@ -28,10 +28,13 @@ def _devices(data_pass: dict = {}) -> dict:
         result['message'] = f"Found devices: {result['count']}"
         result['devices'] = data.collect(u)
 
+    # print(json.dumps(app.store, indent = 4))
+    
     return result
 
 
 def _device_one(id: str) -> dict:
+    
     r = devices.load_one(filter_data = {
         'id': id
     })
@@ -60,8 +63,10 @@ def _device_pair(data_pass: dict) -> dict:
         'message': "No device",
         'mac': utils.ark(data_pass, 'mac'),
         'pin': utils.rnd(6, digits_only = True),
-        'device': {},
+        'device': data_pass,
     }
+
+    # print(json.dumps(app.store, indent = 4))
 
     if type(r).__name__ == 'dict':
         #r['_id'] = str(r['_id'])
@@ -72,10 +77,24 @@ def _device_pair(data_pass: dict) -> dict:
         device_data_found['meta']['last_update'] = utils.now()
         mod = devices.modify(device_data = device_data_found, audit_system = True)
         #print(json.dumps(device_data_found, indent = 4))
-        result['status'] = True
+        result['status'] = mod['status']
         result['device'] = data_pass
-        result['pin'] = device_data_found['settings']['pin']
         result['message'] = f"Found device"
+    else:
+        data_pass['ip'] = app.store['client_ip']
+        data_pass['name'] = f"{data_pass['mac']}-{app.store['client_ip']}"
+        data_pass['meta']['last_update'] = utils.now()
+        data_pass['settings'] = {
+            'pin': utils.rnd(6, digits_only = True),
+            'master': False,
+            'contentPath': 'default'
+        }
+        mod = devices.insert(device_data = data_pass, audit_system = True)
+        result['status'] = mod['status']
+        result['device'] = data_pass
+        result['message'] = f"Found device"
+        
+    #print(json.dumps(result, indent = 4))
     return result
 
 

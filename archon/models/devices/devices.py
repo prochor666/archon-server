@@ -114,7 +114,7 @@ def modify(device_data: dict, audit_system: bool = False) -> dict:
     return result
 
 
-def insert(device_data: dict):
+def insert(device_data: dict, audit_system: bool = False):
     result = validator(device_data)
 
     if result['status'] == True:
@@ -133,9 +133,15 @@ def insert(device_data: dict):
             device_data.pop('id', None)
             device_data.pop('updated_at', None)
 
+            if audit_system == True:
+                system_user = users.system_user()
+                device['creator'] = system_user['_id']
+                creator_username = system_user['username']
+            else:
+                device['creator'] = app.store['user']['data']['id']
+                creator_username = app.store['user']['data']['username']
             device['created_at'] = utils.now()
-            device['creator'] = app.store['user']['data']['id']
-
+            
             if 'target' not in device or type(device['target']) != str:
                 device['target'] = 'site'
 
@@ -146,7 +152,7 @@ def insert(device_data: dict):
             html_message_data = {
                 'app_full_name': app.config['full_name'],
                 'app_name': app.config['name'],
-                'username': app.store['user']['data']['_id'],
+                'username': creator_username,
                 'message': f"Device {device['name']} was created."
             }
             notifications.email('settings.notifications.devices',
