@@ -83,7 +83,7 @@ async def respond(
 @webapp.get("/api/v1/common/{endpoint}", tags=['Common'], status_code=status.HTTP_200_OK)
 async def respond(
     endpoint: str,
-    response: Response, 
+    response: Response,
     request: Request) -> dict:
 
     api_init(request)
@@ -92,13 +92,30 @@ async def respond(
     match endpoint:
         case 'test':
             return common._test()
-        case 'get_enums':
+        case 'enums':
             return common._get_enums()
         case 'countries':
             return common._countries()
         case _:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return bad_status(f"Endpoint {str(request.method)}/{endpoint} not enabled")
+
+
+# Common info
+@webapp.get("/api/v1/common/enums/{enum}", tags=['Common'], status_code=status.HTTP_200_OK)
+async def respond(
+    enum: str,
+    response: Response,
+    request: Request) -> dict:
+
+    api_init(request)
+    enum = str(enum).replace('/', '')
+
+    enum_result = common._get_enums({
+        'enum': enum
+    })
+    response.status_code = status.HTTP_400_BAD_REQUEST
+    return enum_result
 
 
 # System HW/SW

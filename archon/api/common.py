@@ -11,7 +11,13 @@ def _test(data_pass: dict = {}) -> dict:
 
 
 def _get_enums(data_pass: dict = {}) -> dict:
-    return app.config['enum_options']
+    target = utils.ark(data_pass, 'enum', '')
+    result = app.config['enum_options']
+    if len(target) > 0:
+        result = {
+            target: utils.ark(app.config['enum_options'], target, [])
+        }
+    return result
 
 
 def _is_email(data_pass: dict = {}) -> dict:
