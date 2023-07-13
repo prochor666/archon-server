@@ -12,11 +12,19 @@ def _test(data_pass: dict = {}) -> dict:
 
 def _get_enums(data_pass: dict = {}) -> dict:
     target = utils.ark(data_pass, 'enum', '')
-    result = app.config['enum_options']
+    result = {
+        'status': True,
+        'message': 'Full enum dataset',
+        'enums': app.config['enum_options'],
+    }
     if len(target) > 0:
-        result = {
-            target: utils.ark(app.config['enum_options'], target, [])
-        }
+        result['status'] = False
+        result['message'] = f"Enum {target} not found"
+        response = utils.ark(app.config['enum_options'], target, [])
+        result['enums'] = response 
+        if type(response) is list and len(response) > 0:
+            result['status'] = True
+            result['message'] = f"Enum {target} found"
     return result
 
 
