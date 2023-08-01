@@ -1,3 +1,4 @@
 {
-    "python.analysis.typeCheckingMode": "off"
+    "python.analysis.typeCheckingMode": "off",
+    "GitHooks.hooksDirectory": "d:\\dev\\archon-server\\.git\\hooks"
 }

@@ -1,6 +1,6 @@
 @ECHO OFF
 cls
-@WHERE /Q python
+@WHERE /Q python3
 
 @IF %ERRORLEVEL% NEQ 0 (
     @ECHO Python 3 is required

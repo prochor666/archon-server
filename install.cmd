@@ -1,6 +1,6 @@
 @ECHO OFF
 cls
-WHERE /Q python
+WHERE /Q python3
 
 ECHO archon installer
 
@@ -21,29 +21,30 @@ IF %num% LSS 3100 (
     ECHO Python %version_raw% found
 )
 
-WHERE /Q pip
+WHERE /Q pip3
 
 IF %ERRORLEVEL% NEQ 0 (
-    ECHO PIP is required
+    ECHO PIP 3 is required
     EXIT /B 0
 ) ELSE (
-    pip install pymongo
-    pip install pyyaml
-    pip install pyopenssl
-    pip install pyIsEmail
-    pip install psutil
-    pip install websocket
-    pip install websocket-client
-    pip install dnspython
-    pip install python-slugify
-    pip install asyncssh
-    pip install nest_asyncio
-    pip install requests
-    pip install uvicorn
-    pip install fastapi
-    pip install mysql-connector-python
-    pip install colorama
-    pip install jinja2
+    pip3 install pymongo
+    pip3 install pyyaml
+    pip3 install pyopenssl
+    pip3 install pyIsEmail
+    pip3 install psutil
+    pip3 install websocket
+    pip3 install websocket-client
+    pip3 install dnspython
+    pip3 install python-slugify
+    pip3 install asyncssh
+    pip3 install nest_asyncio
+    pip3 install requests
+    pip3 install uvicorn
+    pip3 install fastapi
+    pip3 install mysql-connector-python
+    pip3 install colorama
+    pip3 install jinja2
+    pip3 install pytz
 
     IF exist storage\sites (
         echo storage\sites exists

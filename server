@@ -6,7 +6,7 @@ clear
 
 if [[ -x "$PYTHON" ]];
 then
-    hypercorn --config hypercorn.toml archon-http:webapp --proxy-headers
+    uvicorn archon-http:webapp --proxy-headers --reload --port 7007
 else
     echo  "Python 3 is required, exiting..."
 fi

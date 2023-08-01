@@ -114,6 +114,8 @@ async def respond(
     enum_result = common._get_enums({
         'enum': enum
     })
+    
+    #if len(enum_result[])
     response.status_code = status.HTTP_400_BAD_REQUEST
     return enum_result
 

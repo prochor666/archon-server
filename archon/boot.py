@@ -1,8 +1,9 @@
 from archon import config as configurator, db
+from archon.mem import Mem
 
-class Boot():
-
+class Boot(Mem):
     def __init__(self):
+        self.mem = Mem()
         self._mode = 'initial'
         self._config = configurator.configure()
         self._store = {}

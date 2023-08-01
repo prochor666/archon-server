@@ -3,7 +3,7 @@
 echo "archon installer"
 
 PYTHON="$(which python3)"
-PIP="$(which pip)"
+PIP="$(which pip3)"
 APPCONFIG="config/app.yaml"
 SAPPCONFIG="config/sample.app.yaml"
 APICONFIG="config/api.yaml"
@@ -37,29 +37,30 @@ fi
 
 if [[ ! -x "$PIP" ]];
 then
-    echo  "PIP is required, exiting..."
+    echo  "PIP 3 is required, exiting..."
     exit 1
 fi
 
 if [[ -x "$PYTHON" ]] & [[ -x "$PIP" ]];
 then
-    pip install pymongo
-    pip install pyyaml
-    pip install pyopenssl
-    pip install pyIsEmail
-    pip install psutil
-    pip install websocket
-    pip install websocket-client
-    pip install dnspython
-    pip install python-slugify
-    pip install asyncssh
-    pip install nest_asyncio
-    pip install requests
-    pip install uvicorn
-    pip install fastapi
-    pip install mysql-connector-python
-    pip install colorama
-    pip install jinja2
+    pip3 install pymongo
+    pip3 install pyyaml
+    pip3 install pyopenssl
+    pip3 install pyIsEmail
+    pip3 install psutil
+    pip3 install websocket
+    pip3 install websocket-client
+    pip3 install dnspython
+    pip3 install python-slugify
+    pip3 install asyncssh
+    pip3 install nest_asyncio
+    pip3 install requests
+    pip3 install uvicorn
+    pip3 install fastapi
+    pip3 install mysql-connector-python
+    pip3 install colorama
+    pip3 install jinja2
+    pip3 install pytz
 
     if [[ ! -d $SITESDIR ]];
     then
