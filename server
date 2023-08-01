@@ -2,10 +2,12 @@
 
 PYTHON="$(which python3)"
 export PATH="$PATH:."
+ARCHONDIR="/opt/archon-server"
 clear
 
 if [[ -x "$PYTHON" ]];
 then
+    cd $ARCHONDIR
     uvicorn archon-http:webapp --proxy-headers --reload --port 7007
 else
     echo  "Python 3 is required, exiting..."
