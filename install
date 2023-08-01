@@ -127,6 +127,6 @@ then
         ln -s $ARCHONDIR/arc /usr/bin/arc
     fi
 
-    cp $ARCHONDIR/archon-update /opt/archon-update
+    cp -f $ARCHONDIR/archon-update.sh /opt/archon-update.sh
     chmod +x arc server /opt/archon-update
 fi
