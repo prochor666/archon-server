@@ -145,7 +145,7 @@ api:
             server_id: true
             settings: false
     system/about:
-      api_method: common._about
+      api_method: system._about
       valid_schema:
         v1: {}
     system/cpu:

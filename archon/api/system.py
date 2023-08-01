@@ -1,5 +1,9 @@
 from archon.system import device
 
+def _about(data_pass: dict = {}) -> dict:
+    return device.sys_info()
+
+
 def _os(data_pass: dict = {}) -> dict:
     return device.sys_info()
 

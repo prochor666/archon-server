@@ -99,24 +99,32 @@ def cli_app():
 
             try: 
                 obj = globals()
-                result = getattr(obj[module], method)(function_args) if len(function_args.keys()) > 0 else getattr(obj[module], method)()
-                data_mode = f"{endpoint} result is: {type(result).__name__}  "
-                data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'magenta')}"
-                status = True
-                message = f"task '{endpoint}' completed"
+                if module in obj and method in dir(obj[module]):
+                    result = getattr(obj[module], method)(function_args) if len(function_args.keys()) > 0 else getattr(obj[module], method)()
+                    data_mode = f"{endpoint} result is: {type(result).__name__}  "
+                    data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'magenta')}"
+                    status = True
+                    message = f"task '{endpoint}' completed"
 
-                if status == False:
-                    data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'red')}"
+                    if status == False:
+                        data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'red')}"
 
-                method_response = utils.format_response(status, message)
+                    method_response = utils.format_response(status, message)
 
-                if type(result) == dict or \
-                    type(result) == list or \
-                    type(result) == tuple or \
-                    type(result) == set:
-                    result_output = json.dumps(result, indent=4)
-                else: 
-                    result_output = str(result)
+                    if type(result) == dict or \
+                        type(result) == list or \
+                        type(result) == tuple or \
+                        type(result) == set:
+                        result_output = json.dumps(result, indent=4)
+                    else: 
+                        result_output = str(result)
+                else:
+                    data_mode = f"{endpoint}  "
+                    data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'magenta')}"
+                    status = False
+                    result_output = f"Method {method} of module {module} not found"
+                    message = f"endpoint '{endpoint}' 👻 method is not allowed"
+                    method_response = utils.format_response(status, message)
 
                 output_buffer.append('')
                 output_buffer.append(intro + data_status_and_mode)
@@ -129,13 +137,13 @@ def cli_app():
                 status = False
                 data_mode = f"{endpoint} "
                 data_status_and_mode = f"{colors.mod(' 🧪 ' + data_mode, 'white', 'magenta')}"
-                method_response = utils.format_response(status, json.dumps({'error': e}))
+                method_response = utils.format_response(status, json.dumps({'error': str(e)}))
 
                 output_buffer.append('')
                 output_buffer.append(intro + data_status_and_mode)
                 output_buffer.append('')
                 output_buffer.append(method_response)
-                output_buffer.append('') 
+                output_buffer.append('')
 
     else:
         output_buffer.append(

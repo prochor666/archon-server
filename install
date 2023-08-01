@@ -118,5 +118,5 @@ then
         echo "File $SMTPCONFIG exists"
     fi
 
-    chmod +x app archon
+    chmod +x arc server
 fi
