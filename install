@@ -124,7 +124,7 @@ then
 
     if [[ ! -h "/usr/bin/arc" ]];
     then
-        ln -s arc /usr/bin/arc
+        ln -s $ARCHONDIR/arc /usr/bin/arc
     fi
 
     chmod +x arc server
