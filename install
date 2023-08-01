@@ -122,6 +122,10 @@ then
         echo "File $SMTPCONFIG exists"
     fi
 
-    ln -s arc /usr/bin/arc
+    if [[ ! -h "/usr/bin/arc" ]];
+    then
+        ln -s arc /usr/bin/arc
+    fi
+
     chmod +x arc server
 fi
