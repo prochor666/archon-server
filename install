@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 echo "Archon installer"
 
 PYTHON="$(which python3)"
@@ -14,6 +15,9 @@ SITESDIR="storage/sites"
 DEVICESDIR="storage/devices"
 RESOURCESDIR="storage/resources"
 LOGSDIR="storage/logs"
+ARCHONDIR="/opt/archon-server"
+
+cd $ARCHONDIR
 
 if [[ ! -x "$PYTHON" ]];
 then

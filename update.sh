@@ -1,24 +1,33 @@
 #!/bin/bash
 
-echo "dirname : [$(dirname "$0")]"
-
 echo "Archon updater"
 
+echo "Stopping archon-server service"
+systemctl stop archon-server
+
+WORKINGDIR="$(pwd "$0")"
 APPCONFIG="config/app.yaml"
-SAPPCONFIG="config/sample.app.yaml"
 APICONFIG="config/api.yaml"
-SAPICONFIG="config/sample.api.yaml"
 SMTPCONFIG="config/smtp.yaml"
-SSMTPCONFIG="config/sample.smtp.yaml"
-SITESDIR="storage/sites"
-DEVICESDIR="storage/devices"
-RESOURCESDIR="storage/resources"
-LOGSDIR="storage/logs"
+STORAGEDIR="storage"
 
 ARCHONDIR="/opt/archon-server"
 ARCHONDIRBACKUP="/opt/t0-archon-server"
 
-t0-archon-server
+echo "WORKINGDIR: $WORKINGDIR"
+
+if [[ "$WORKINGDIR" == "$ARCHONDIR" ]];
+then
+    echo "Can not run in $WORKINGDIR, copy this script somewhere else, e.g. /opt"
+    exit 1
+fi
+
+if [[ -d $ARCHONDIRBACKUP ]];
+then
+    echo "Directory $ARCHONDIRBACKUP exists, deleting"
+    rm -rf $ARCHONDIRBACKUP
+fi
+
 if [[ -d $ARCHONDIR ]];
 then
     echo "Directory $ARCHONDIR exists"
@@ -31,11 +40,16 @@ fi
 cd /opt
 git clone https://github.com/prochor666/archon-server.git
 
-cp $ARCHONDIRBACKUP/$APPCONFIG $ARCHONDIR/$APPCONFIG
-cp $ARCHONDIRBACKUP/$APICONFIG $ARCHONDIR/$APICONFIG
-cp $ARCHONDIRBACKUP/$SMTPCONFIG $ARCHONDIR/$SMTPCONFIG
-cp $ARCHONDIRBACKUP/$SITESDIR $ARCHONDIR/$SITESDIR
-cp $ARCHONDIRBACKUP/$DEVICESDIR $ARCHONDIR/$DEVICESDIR
-cp $ARCHONDIRBACKUP/$RESOURCESDIR $ARCHONDIR/$RESOURCESDIR
-cp $ARCHONDIRBACKUP/$LOGSDIR $ARCHONDIR/$LOGSDIR
+cp -f $ARCHONDIRBACKUP/$APPCONFIG $ARCHONDIR/$APPCONFIG
+cp -f $ARCHONDIRBACKUP/$APICONFIG $ARCHONDIR/$APICONFIG
+cp -f $ARCHONDIRBACKUP/$SMTPCONFIG $ARCHONDIR/$SMTPCONFIG
+cp -r $ARCHONDIRBACKUP/$STORAGEDIR $ARCHONDIR
 
+echo "Running install script"
+chmod +x $ARCHONDIR/install
+cd $ARCHONDIR
+./install
+cd /opt
+
+echo "Starting archon-server service"
+systemctl start archon-server
