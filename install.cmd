@@ -2,7 +2,7 @@
 cls
 WHERE /Q python3
 
-ECHO archon installer
+ECHO Archon installer
 
 IF %ERRORLEVEL% NEQ 0 (
     ECHO Python 3 is required

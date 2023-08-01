@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "archon installer"
+echo "Archon installer"
 
 PYTHON="$(which python3)"
 PIP="$(which pip3)"
@@ -118,5 +118,6 @@ then
         echo "File $SMTPCONFIG exists"
     fi
 
+    ln -s arc /usr/bin/arc
     chmod +x arc server
 fi
